@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
 import { cn } from '@/lib/utils';
+import { ThemeProvider } from '@/providers/theme-provider';
 
 const mainFont = localFont({
   src: [
@@ -29,7 +30,16 @@ export default function RootLayout({
 }>) {
   return (
     <html dir='rtl' lang='fa-Ir' className={cn('font-sanX', mainFont.variable)}>
-      <body>{children}</body>
+      <body>
+        <ThemeProvider
+          attribute='class'
+          defaultTheme='system'
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
