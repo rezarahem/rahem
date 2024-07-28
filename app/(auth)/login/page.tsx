@@ -1,5 +1,12 @@
+import LoginForm from './login-form';
+
+
 const LoginPage = () => {
-  return <div>login</div>;
+  return (
+    <div className='flex h-dvh items-center justify-center'>
+      <LoginForm />
+    </div>
+  );
 };
 
 export default LoginPage;
