@@ -1,21 +1,24 @@
 'use client';
 
+import { Otp } from '@/actions/otp';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { PhoneNumberSchema } from '@/zod/phone-number';
+import { toEnglishNumberStr } from '@/lib/persian-string';
+import { OtpSchema, PhoneNumberSchema } from '@/zod/login-schema';
 import { ArrowLeft } from 'lucide-react';
-import { useTheme } from 'next-themes';
 
-import { use, useState } from 'react';
+import { useState, useTransition } from 'react';
+import toast from 'react-hot-toast';
 
 const LoginForm = () => {
-  const [toast, setToast] = useState('');
+  const [isPending, startTransition] = useTransition();
+  const [inputError, setInputError] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [userOtpNumber, setUserOtpNumber] = useState('');
   const [otpNumber, setOtpNumber] = useState('');
   const [activeTemp, setActiveTemp] = useState<'phoneNumber' | 'otpNumber'>(
     'phoneNumber',
   );
-  const { setTheme } = useTheme();
 
   const loginInput = () => {
     switch (activeTemp) {
@@ -24,39 +27,85 @@ const LoginForm = () => {
           <Input
             value={phoneNumber}
             onChange={(e) => {
-              setToast('');
+              setInputError('');
               setPhoneNumber(e.target.value);
             }}
+            disabled={isPending}
             className='ss02 w-full placeholder:text-xs'
             placeholder='شماره تماس'
           />
         );
-        break;
 
       case 'otpNumber':
         return (
           <Input
-            value={otpNumber}
+            value={userOtpNumber}
             onChange={(e) => {
-              setOtpNumber(e.target.value);
+              setUserOtpNumber(e.target.value);
             }}
+            disabled={isPending}
             className='ss02 w-full placeholder:text-xs'
             placeholder='کد یک بار مصرف'
           />
         );
-        break;
     }
   };
 
   const onSubmitPhoneNumber = () => {
-    const validatedField = PhoneNumberSchema.safeParse(phoneNumber);
+    try {
+      startTransition(async () => {
+        const validatedField = PhoneNumberSchema.safeParse(
+          toEnglishNumberStr(phoneNumber),
+        );
 
-    if (!validatedField.success) {
-      setToast(validatedField.error.errors[0].message);
+        if (!validatedField.success) {
+          setInputError(validatedField.error.errors[0].message);
+          return;
+        }
+
+        const result = await Otp(validatedField.data);
+
+        if (!result) {
+          toast.error('اختلال در شبکه، مجددا تلاش کنید');
+        } else if (result.errorMessage) {
+          toast.error(result.errorMessage);
+        } else if (result.code) {
+          setOtpNumber(result.code);
+          setActiveTemp('otpNumber');
+          toast.success('کد ورود ارسال شد');
+        } else {
+          toast.error('خطایی رخ داد، مجددا تلاش کنید');
+        }
+      });
+    } catch (error) {
+      // console.log(error);
+      toast.error('خطایی رخ داد، مجددا تلاش کنید');
     }
+  };
 
-    if (validatedField.success) {
-      // call sms api
+  const onVerification = () => {
+    try {
+      startTransition(async () => {
+        const validatedField = OtpSchema.safeParse(
+          toEnglishNumberStr(userOtpNumber),
+        );
+
+        if (!validatedField.success) {
+          setInputError(validatedField.error.errors[0].message);
+          return;
+        }
+
+        const isVerified = otpNumber === userOtpNumber;
+
+        if (!isVerified) {
+          toast.error('کد ورود صحیح نمی‌باشد');
+          return;
+        } else {
+          toast.success('ورود موفق');
+        }
+      });
+    } catch (error) {
+      toast.error('خطایی رخ داد، مجددا تلاش کنید');
     }
   };
 
@@ -67,35 +116,23 @@ const LoginForm = () => {
           برای ادامه وارد شوید
         </p>
         <span className='absolute right-[3px] top-10 text-xs text-red-500'>
-          {toast}
+          {inputError}
         </span>
         {loginInput()}
         <Button
-          onClick={onSubmitPhoneNumber}
+          onClick={(e) => {
+            e.preventDefault();
+
+            activeTemp === 'phoneNumber'
+              ? onSubmitPhoneNumber()
+              : onVerification();
+          }}
           size='lg'
           className='mr-auto mt-10 flex'
+          disabled={isPending}
         >
           ورود
           <ArrowLeft className='size-4 -translate-x-3' />
-        </Button>
-      </div>
-
-      <div>
-        <Button
-          onClick={(e) => {
-            e.preventDefault();
-            setTheme('dark');
-          }}
-        >
-          Dark
-        </Button>
-        <Button
-          onClick={(e) => {
-            e.preventDefault();
-            setTheme('light');
-          }}
-        >
-          Light
         </Button>
       </div>
     </div>

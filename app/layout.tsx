@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/providers/theme-provider';
+import { ToastProvider } from '@/providers/toast-provider';
 
 const mainFont = localFont({
   src: [
@@ -38,6 +39,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <ToastProvider />
         </ThemeProvider>
       </body>
     </html>

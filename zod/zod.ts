@@ -1,1 +1,1 @@
-export { PhoneNumberSchema, OtpSchema } from './phone-number';
+export { PhoneNumberSchema, OtpSchema } from './login-schema';
