@@ -30,8 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html dir='rtl' lang='fa-Ir' className={cn('font-sanX', mainFont.variable)}>
-      <body>
+    <html dir='rtl' lang='fa-Ir' suppressHydrationWarning>
+      <body className={cn('font-sanX', mainFont.variable)}>
         <ThemeProvider
           attribute='class'
           defaultTheme='system'

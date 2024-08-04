@@ -1,4 +1,11 @@
-import { pgTable, serial, pgEnum, text, timestamp } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  serial,
+  text,
+  timestamp,
+  integer,
+  bigint,
+} from 'drizzle-orm/pg-core';
 import userRole from './user-role';
 
 const User = pgTable('user', {
@@ -7,12 +14,12 @@ const User = pgTable('user', {
   phoneNumber: text('phone_number').unique().notNull(),
   role: userRole('role').notNull().default('USER').notNull(),
   image: text('image'),
-  createdAt: timestamp('created_at', { mode: 'string', withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true })
-    .notNull()
-    .defaultNow(),
+  otp: integer('otp'),
+  lastOtpAttempt: bigint('lastOtpAttempt', {
+    mode: 'number',
+  }),
+  createdAt: timestamp('created_at').notNull(),
+  updatedAt: timestamp('updated_at').notNull(),
 });
 
 export default User;
