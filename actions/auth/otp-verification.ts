@@ -19,6 +19,7 @@ export const OtpVerification = async (
         id: User.id,
         otp: User.otp,
         userRole: User.role,
+        phoneNumber: User.phoneNumber,
         lastOtpAttempt: User.lastOtpAttempt,
       })
       .from(User)
@@ -57,6 +58,7 @@ export const OtpVerification = async (
     const result = await login({
       id: userLoginData.id,
       userRole: userLoginData.userRole,
+      phoneNumber: userLoginData.phoneNumber,
     });
 
     if (!result) {

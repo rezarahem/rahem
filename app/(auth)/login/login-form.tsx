@@ -85,7 +85,7 @@ const LoginForm = () => {
           toast.error(result.errorMessage);
         } else if (result.success) {
           toast.success('ورود موفق');
-          redirect('/');
+          redirect('/console');
         } else {
           toast.error('خطایی رخ داد، مجددا تلاش کنید');
         }

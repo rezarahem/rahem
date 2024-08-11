@@ -1,4 +1,3 @@
-import { BlobOptions } from 'buffer';
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
@@ -6,12 +5,14 @@ import 'server-only';
 
 type UserDataType = {
   id: number;
+  phoneNumber: string;
   userRole: 'ADMIN' | 'USER';
 };
 
 type UserSessionType = {
   id: number;
   userRole?: string;
+  phoneNumber: string;
 };
 
 const key = new TextEncoder().encode(process.env.SECRET_KEY);
@@ -36,22 +37,29 @@ export async function login(userData: UserDataType): Promise<{
   errorMessage?: string;
 }> {
   try {
-    const { id, userRole } = userData;
+    const { id, userRole, phoneNumber } = userData;
 
     const user: UserSessionType =
       userRole === 'ADMIN'
         ? {
             id,
+            phoneNumber,
             userRole,
           }
         : {
             id,
+            phoneNumber,
           };
 
     const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     const session = await encrypt({ user, expires });
 
-    cookies().set('session', session, { expires, httpOnly: true });
+    cookies().set('session', session, {
+      expires,
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+    });
 
     return {
       success: true,
@@ -68,7 +76,12 @@ export async function logout() {
   cookies().set('session', '', { expires: new Date(0) });
 }
 
-export async function getSession() {
+export async function getSession(): Promise<{
+  user: UserSessionType;
+  expires: string;
+  // iat: number;
+  // exp: number;
+} | null> {
   const session = cookies().get('session')?.value;
   if (!session) return null;
   return await decrypt(session);
@@ -78,7 +91,6 @@ export async function updateSession(request: NextRequest) {
   const session = request.cookies.get('session')?.value;
   if (!session) return;
 
-  // Refresh the session so it doesn't expire
   const parsed = await decrypt(session);
   parsed.expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   const res = NextResponse.next();
