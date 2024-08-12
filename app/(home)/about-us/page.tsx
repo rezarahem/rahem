@@ -21,7 +21,7 @@ const AboutUs = () => {
     {
       label: 'ما از چه تکنولوژی‌ها و زبان‌هایی استفاده می‌کنیم؟',
       content:
-        'تمرکز من در rahem.dev بر روی اکوسیستم Reactjs، Nodejs، و Nextjs است. برای زبان هم از javascript و typescript استفاده می‌کنم. البته بیشتر تایپ‌اسکریپت، ولی در هر حال این دوتا تقریبا یک زبان هستند.کار کردن با این تکنولوژی‌ها خیلی برام لذت بخشه و حالا حالا نمی‌‌خوام به صورت جدی سراغ چیز دیگه برم. ولی شاید در آینده خیلی دور سراغ زبان‌ها و فیلد‌ها دیگه دنیای برنامه‌نویسی هم بریم.',
+        'تمرکز من در rahem.dev بر روی اکوسیستم Reactjs، Nodejs، و Nextjs است. برای زبان هم از javascript و typescript استفاده می‌کنم. البته بیشتر تایپ‌اسکریپت، ولی در هر حال این دوتا تقریبا یک زبان هستند. کار کردن با این تکنولوژی‌ها خیلی برام لذت بخشه و حالا حالا نمی‌‌خوام به صورت جدی سراغ چیز دیگه برم. ولی شاید در آینده خیلی دور سراغ زبان‌ها و فیلد‌ها دیگه دنیای برنامه‌نویسی هم بریم.',
     },
   ];
 
@@ -54,7 +54,7 @@ const AboutUs = () => {
             {whoAmI.label}
           </h2>
           <div className='grid grid-cols-1 gap-x-6 sm:grid-cols-4'>
-            <div className='aspect-h-3 aspect-w-5 sm:aspect-h-5 sm:aspect-w-5 lg:aspect-h-6 lg:aspect-w-5 relative col-span-4 sm:col-span-1'>
+            <div className='aspect-h-3 aspect-w-5 relative col-span-4 sm:aspect-h-5 sm:aspect-w-5 lg:aspect-h-6 lg:aspect-w-5 sm:col-span-1'>
               <Image
                 fill
                 className='rounded-md object-cover object-top'

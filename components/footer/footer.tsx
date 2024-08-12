@@ -16,7 +16,10 @@ const Footer = () => {
         <Container className='flex items-center justify-between py-3'>
           <ThemeController />
           <div className='cursor-default'>
-            <p dir='ltr' className='text-sm text-muted-foreground'>
+            <p
+              dir='ltr'
+              className='translate-y-px text-sm text-muted-foreground'
+            >
               &copy; {fullYear()} rahem.dev
             </p>
           </div>

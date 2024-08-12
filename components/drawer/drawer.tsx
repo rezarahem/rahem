@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { useWindowSize } from 'usehooks-ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import UserMenu from '../user-menu/user-menu';
+import Link from 'next/link';
 
 type DrawerProps = {
   session: {
@@ -77,7 +78,15 @@ const Drawer = ({ session }: DrawerProps) => {
               <div className='flex h-full flex-col justify-between px-2 pb-32 pt-6'>
                 <div className='absolute right-1/2 top-1 h-1 w-32 translate-x-1/2 rounded-full bg-gray-200 dark:bg-slate-600'></div>
                 <div>
-                  <UserMenu session={session} />
+                  <Link
+                    onClick={(e) => {
+                      // e.preventDefault();
+                      setIsOpen(!isOpen);
+                    }}
+                    href='/about-us'
+                  >
+                    درباره ما
+                  </Link>
                 </div>
               </div>
             </motion.div>
