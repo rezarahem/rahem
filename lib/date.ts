@@ -5,14 +5,17 @@ export const getLocalDateForDb = (): Date => {
 };
 
 export const nowTimestamp = () => {
-  return Date.now();
+  return Date.now().toString();
 };
 
 export const nowDate = () => {
   return new Date(Date.now());
 };
 
-export const hasTwoMinutesPassed = (dbTimestamp: number, currentTimestamp: number) => {
+export const hasTwoMinutesPassed = (
+  dbTimestamp: string,
+  currentTimestamp: string,
+) => {
   // 120000ms = 120s
-  return currentTimestamp - dbTimestamp < 120000;
+  return +currentTimestamp - +dbTimestamp < 120000;
 };

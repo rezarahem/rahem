@@ -6,12 +6,10 @@ import 'server-only';
 type UserDataType = {
   id: number;
   phoneNumber: string;
-  userRole: 'ADMIN' | 'USER';
 };
 
 type UserSessionType = {
   id: number;
-  userRole?: string;
   phoneNumber: string;
 };
 
@@ -32,25 +30,11 @@ export async function decrypt(input: string): Promise<any> {
   return payload;
 }
 
-export async function login(userData: UserDataType): Promise<{
+export async function login(user: UserDataType): Promise<{
   success: boolean;
   errorMessage?: string;
 }> {
   try {
-    const { id, userRole, phoneNumber } = userData;
-
-    const user: UserSessionType =
-      userRole === 'ADMIN'
-        ? {
-            id,
-            phoneNumber,
-            userRole,
-          }
-        : {
-            id,
-            phoneNumber,
-          };
-
     const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
     const session = await encrypt({ user, expires });
 

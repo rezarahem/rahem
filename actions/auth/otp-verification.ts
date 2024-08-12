@@ -18,7 +18,6 @@ export const OtpVerification = async (
       .select({
         id: User.id,
         otp: User.otp,
-        userRole: User.role,
         phoneNumber: User.phoneNumber,
         lastOtpAttempt: User.lastOtpAttempt,
       })
@@ -33,7 +32,7 @@ export const OtpVerification = async (
     }
 
     const isOtpValid = hasTwoMinutesPassed(
-      userLoginData.lastOtpAttempt as number,
+      userLoginData.lastOtpAttempt as string,
       nowTimestamp(),
     );
 
@@ -44,7 +43,14 @@ export const OtpVerification = async (
       };
     }
 
-    const varification = +otp === userLoginData.otp;
+    if (!userLoginData.otp) {
+      return {
+        success: false,
+        errorMessage: 'خطایی رخ داد، مجددا تلاش کنید',
+      };
+    }
+
+    const varification = +otp === +userLoginData.otp;
 
     if (!varification) {
       return {
@@ -57,7 +63,6 @@ export const OtpVerification = async (
 
     const result = await login({
       id: userLoginData.id,
-      userRole: userLoginData.userRole,
       phoneNumber: userLoginData.phoneNumber,
     });
 

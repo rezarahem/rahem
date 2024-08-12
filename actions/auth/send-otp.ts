@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export const SentOtp = async (
   phone: string,
-  otp: number,
+  otp: string,
 ): Promise<{
   success: boolean;
   errorMessage?: string;
@@ -15,12 +15,11 @@ export const SentOtp = async (
       {
         bodyId: 207431,
         to: phone,
-        args: [` ${String(otp)}`],
+        args: [otp],
       },
     );
 
     const { data, status, statusText } = res;
-
 
     if (status !== 200 || !statusText || statusText.toLowerCase() !== 'ok') {
       const errorMessage = 'خطا در ارسال کد تایید، مجددا تلاش کنید';

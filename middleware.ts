@@ -6,8 +6,6 @@ import { DEAFAULT_LOGIN_REDIRECT, authRoutes, publicRoutes } from '@/routes';
 export const middleware = async (req: NextRequest) => {
   // return await updateSession(req);
   try {
-    console.log('middleware');
-
     await updateSession(req);
     const { pathname } = req.nextUrl;
     const session = await getSession();
@@ -16,8 +14,9 @@ export const middleware = async (req: NextRequest) => {
     const isPublicRoutes = publicRoutes.includes(pathname);
 
     if (isAuthRoutes) {
-      if (isLogin)
+      if (isLogin) {
         return NextResponse.redirect(new URL(DEAFAULT_LOGIN_REDIRECT, req.url));
+      }
 
       return;
     }
