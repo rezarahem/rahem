@@ -12,17 +12,6 @@ const ThemeController = () => {
 
   return (
     <div className='flex'>
-      {/* <Button
-        onClick={async (e) => {
-          await Logout();
-        }}
-        variant='ghost'
-        className='group flex gap-2'
-      >
-        <LogOut className='size-5 group-hover:text-rose-500' />
-        <span className='group-hover:text-rose-500'>خروج</span>
-      </Button> */}
-
       <div className='flex w-fit items-center gap-1 rounded-full border'>
         <Button
           onClick={(e) => {

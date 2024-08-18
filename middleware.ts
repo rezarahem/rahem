@@ -4,9 +4,10 @@ import { getSession, updateSession } from './actions/auth/auth';
 import { DEAFAULT_LOGIN_REDIRECT, authRoutes, publicRoutes } from '@/routes';
 
 export const middleware = async (req: NextRequest) => {
-  // return await updateSession(req);
   try {
-    await updateSession(req);
+    const res = await updateSession(req);
+    // if (!res) NextResponse.next();
+
     const { pathname } = req.nextUrl;
     const session = await getSession();
     const isLogin = session && session?.user ? true : false;
@@ -18,7 +19,7 @@ export const middleware = async (req: NextRequest) => {
         return NextResponse.redirect(new URL(DEAFAULT_LOGIN_REDIRECT, req.url));
       }
 
-      return;
+      return res;
     }
 
     if (!isLogin && !isPublicRoutes)
@@ -27,7 +28,8 @@ export const middleware = async (req: NextRequest) => {
     // if (isAdminRoutes && String(req.auth?.user.role) !== 'ADMIN')
     //   return Response.redirect(new URL('/user', nextUrl));
 
-    return NextResponse.next();
+    return res;
+    // return NextResponse.next();
   } catch (error) {
     // console.error('Middleware error:', error);
     return NextResponse.error();
@@ -37,3 +39,10 @@ export const middleware = async (req: NextRequest) => {
 export const config = {
   matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };
+
+// import { NextRequest } from 'next/server';
+// import { updateSession } from './actions/auth/auth';
+
+// export async function middleware(request: NextRequest) {
+//   return await updateSession(request);
+// }

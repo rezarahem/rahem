@@ -1,10 +1,9 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-import { logout } from './auth';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 export const Logout = async () => {
-  await logout();
+  cookies().set('session', '', { expires: new Date(0) });
   redirect('/');
 };

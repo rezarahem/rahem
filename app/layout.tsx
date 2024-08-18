@@ -33,7 +33,7 @@ export default function RootLayout({
   return (
     <html dir='rtl' lang='fa-Ir' suppressHydrationWarning>
       <body className={cn('font-sanX', mainFont.variable)}>
-        <NextTopLoader showSpinner={false}  />
+        <NextTopLoader showSpinner={false} />
         <ThemeProvider
           attribute='class'
           defaultTheme='system'

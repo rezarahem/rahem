@@ -1,40 +1,43 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Menu } from 'lucide-react';
+import { LogOut, Menu } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useWindowSize } from 'usehooks-ts';
 import { AnimatePresence, motion } from 'framer-motion';
 import UserMenu from '../user-menu/user-menu';
 import Link from 'next/link';
+import NavLinks from '../navbar/nav-links';
+import { UserSessionType } from '@/actions/auth/auth';
+import { Logout } from '@/actions/auth/logout';
 
 type DrawerProps = {
   session: {
-    user: {
-      id: number;
-      phoneNumber: string;
-      userRole?: string;
-    };
-    expires: string;
+    user: UserSessionType;
+    expires: Date;
   } | null;
 };
 
 const Drawer = ({ session }: DrawerProps) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const { width } = useWindowSize();
 
+  const toggleDrawer = () => {
+    setIsDrawerOpen(!isDrawerOpen);
+  };
+
   useEffect(() => {
-    if (width > 786) {
-      setIsOpen(false);
+    if (width > 640) {
+      setIsDrawerOpen(false);
     }
   }, [width]);
 
   return (
-    <div className='md:hidden'>
+    <div className='sm:hidden'>
       <Button
         onClick={(e) => {
           e.preventDefault();
-          setIsOpen(!isOpen);
+          setIsDrawerOpen(!isDrawerOpen);
         }}
         variant='ghost'
         size='icon'
@@ -42,14 +45,13 @@ const Drawer = ({ session }: DrawerProps) => {
       >
         <Menu />
       </Button>
-
       <AnimatePresence>
-        {isOpen && (
+        {isDrawerOpen && (
           <>
             <motion.div
               onClick={(e) => {
                 e.preventDefault();
-                setIsOpen(!isOpen);
+                setIsDrawerOpen(!isDrawerOpen);
               }}
               initial={{ opacity: 0 }}
               animate={{
@@ -75,18 +77,10 @@ const Drawer = ({ session }: DrawerProps) => {
               }}
               className='fixed inset-0 z-50 rounded-xl rounded-b-none border bg-white shadow-md dark:bg-slate-900'
             >
-              <div className='flex h-full flex-col justify-between px-2 pb-32 pt-6'>
+              <div className='flex h-full flex-col justify-between px-4 pb-32 pt-6'>
                 <div className='absolute right-1/2 top-1 h-1 w-32 translate-x-1/2 rounded-full bg-gray-200 dark:bg-slate-600'></div>
                 <div>
-                  <Link
-                    onClick={(e) => {
-                      // e.preventDefault();
-                      setIsOpen(!isOpen);
-                    }}
-                    href='/about-us'
-                  >
-                    درباره ما
-                  </Link>
+                  <NavLinks onToggle={toggleDrawer} />
                 </div>
               </div>
             </motion.div>

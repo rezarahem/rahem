@@ -1,6 +1,7 @@
 import { FileUp, HandCoins, Headset, Target } from 'lucide-react';
 import Container from '@/components/ui/container';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 const iconFeatures: {
   label: string;
@@ -39,10 +40,10 @@ const HomePage = () => {
               همین حالا شروع کنید
             </p>
             <Link
-              href='/courses/next-js'
+              href='/courses'
               className='rounded-md bg-black px-4 py-2 text-white dark:bg-white dark:text-black'
             >
-              <strong>دوره نکست</strong>
+              <strong>مشاهده دوره‌ها</strong>
             </Link>
           </div>
         </div>

@@ -3,16 +3,17 @@
 import Link from 'next/link';
 import Drawer from '../drawer/drawer';
 import Container from '../ui/container';
-import Logo from '../ui/logo';
+import NavLinks from './nav-links';
+import { Logout } from '@/actions/auth/logout';
+import { LogIn, LogOut, ShoppingCart, User } from 'lucide-react';
+import { Button } from '../ui/button';
+import { UserSessionType } from '@/actions/auth/auth';
+import UserAvatar from '../user/user-avatar';
 
 type NavbarClientProps = {
   session: {
-    user: {
-      id: number;
-      userRole?: string;
-      phoneNumber: string;
-    };
-    expires: string;
+    user: UserSessionType;
+    expires: Date;
   } | null;
 };
 
@@ -23,11 +24,31 @@ const NavbarClient = ({ session }: NavbarClientProps) => {
       isFullHeight
       className='flex items-center justify-between gap-4'
     >
-      <div className='flex gap-4 max-md:hidden'>
-        <Link href='/about-us'>درباره ما</Link>
+      <div className='flex items-center gap-2 md:gap-5'>
+        <Drawer session={session} />
+        <div className='max-sm:hidden'>
+          <NavLinks />
+        </div>
       </div>
-      <Drawer session={session} />
-      <Logo linkClassName='h-16 w-32' />
+
+      {session ? (
+        <div className='flex gap-2'>
+          <UserAvatar session={session} />
+          <Link href='/cart'>
+            <Button variant='ghost' size='icon'>
+              <ShoppingCart />
+            </Button>
+          </Link>
+        </div>
+      ) : (
+        <Link
+          href='/login'
+          className='group flex h-9 items-center gap-2 rounded-md bg-black px-4 py-2 text-white dark:bg-white dark:text-black'
+        >
+          <LogIn className='size-5' />
+          <span className='-translate-y-px'>ورود</span>
+        </Link>
+      )}
     </Container>
   );
 };

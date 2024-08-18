@@ -2,16 +2,16 @@
 
 import { db } from '@/drizzle/db';
 import User from '@/drizzle/schemas/user';
-import { getLocalDateForDb, nowTimestamp } from '@/lib/date';
-import { eq } from 'drizzle-orm';
-import { SentOtp } from './send-otp';
+import { utcDate, utcUnix } from '@/lib/date';
+import { SentOtp } from '../otp/send-otp';
 
 const generateOtp = (): string => {
   return Math.floor(10000 + Math.random() * 90000).toString();
 };
 
-export const CheckOrCreateUser = async (
+export const CreateUser = async (
   phoneNumber: string,
+  userName: string,
 ): Promise<{
   success: boolean;
   errorMessage?: string;
@@ -19,35 +19,20 @@ export const CheckOrCreateUser = async (
   try {
     const otp = generateOtp();
 
-    const [user] = await db
-      .update(User)
-      .set({
-        otp,
-        lastOtpAttempt: nowTimestamp(),
-        updatedAt: getLocalDateForDb(),
-      })
-      .where(eq(User.phoneNumber, phoneNumber))
-      .returning();
-
-    if (user) {
-      const res = await SentOtp(phoneNumber, otp);
-      return res;
-    }
-
     const createdUser = await db
       .insert(User)
       .values({
         phoneNumber,
         otp,
-        lastOtpAttempt: nowTimestamp(),
-        updatedAt: getLocalDateForDb(),
-        createdAt: getLocalDateForDb(),
+        name: userName,
+        lastOtpAttempt: utcUnix(),
+        updatedAt: utcDate(),
+        createdAt: utcDate(),
       })
       .returning();
 
     if (createdUser) {
-      const res = await SentOtp(phoneNumber, otp);
-      return res;
+      return await SentOtp(phoneNumber, otp);
     }
 
     return {
@@ -55,7 +40,8 @@ export const CheckOrCreateUser = async (
       errorMessage: 'خطایی رخ داد، مجددا تلاش کنید',
     };
   } catch (error) {
-    // console.log('[UpsertUserAction]', error);
+    // console.log(error);
+
     return {
       success: false,
       errorMessage: 'خطایی رخ داد، مجددا تلاش کنید',

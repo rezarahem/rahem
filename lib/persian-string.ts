@@ -1,6 +1,7 @@
 const regExpArabicNumber = new RegExp(/[\u0660-\u0669]/, 'g');
 const regExpPersianNumber = new RegExp(/[\u06f0-\u06f9]/, 'g');
 const regExpEnglishNumber = new RegExp(/[\u0030-\u0039]/, 'g');
+export const regexOnlyDigits = '^[0-9۰-۹٠-٩]+$';
 
 export const toPersianNumberStr = (value: string): string => {
   if (!value) return '';

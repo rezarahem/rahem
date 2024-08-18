@@ -3,8 +3,9 @@
 import { db } from '@/drizzle/db';
 import { eq } from 'drizzle-orm';
 import User from '@/drizzle/schemas/user';
-import { hasTwoMinutesPassed, nowTimestamp } from '@/lib/date';
-import { login } from './auth';
+import { hasTwoMinutesPassed, utcUnix } from '@/lib/date';
+import { Login } from './login';
+// import { login } from './auth';
 
 export const OtpVerification = async (
   phoneNubmer: string,
@@ -18,13 +19,14 @@ export const OtpVerification = async (
       .select({
         id: User.id,
         otp: User.otp,
+        userName: User.name,
         phoneNumber: User.phoneNumber,
         lastOtpAttempt: User.lastOtpAttempt,
       })
       .from(User)
       .where(eq(User.phoneNumber, phoneNubmer));
 
-    if (!userLoginData) {
+    if (!userLoginData || !userLoginData.otp) {
       return {
         success: false,
         errorMessage: 'خطایی رخ داد مجددا تلاش کنید',
@@ -33,58 +35,30 @@ export const OtpVerification = async (
 
     const isOtpValid = hasTwoMinutesPassed(
       userLoginData.lastOtpAttempt as string,
-      nowTimestamp(),
+      utcUnix(),
     );
+    const isOtpMatching = +otp === +userLoginData.otp;
 
-    if (!isOtpValid) {
+    if (!isOtpValid || !isOtpMatching) {
       return {
         success: false,
-        errorMessage: 'کد نامعتبر',
+        errorMessage: 'کد نامعتبر، مجددا تلاش کنید',
       };
     }
 
-    if (!userLoginData.otp) {
-      return {
-        success: false,
-        errorMessage: 'خطایی رخ داد، مجددا تلاش کنید',
-      };
-    }
-
-    const varification = +otp === +userLoginData.otp;
-
-    if (!varification) {
-      return {
-        success: false,
-        errorMessage: 'کد نامعتبر',
-      };
-    }
-
-    // login
-
-    const result = await login({
+    const res = await Login({
       id: userLoginData.id,
+      userName: userLoginData.userName as string,
       phoneNumber: userLoginData.phoneNumber,
     });
 
-    if (!result) {
-      return {
-        errorMessage: 'خطایی رخ داد، مجددا تلاش کنید',
-        success: false,
-      };
-    } else if (!result.success && result.errorMessage) {
-      return {
-        errorMessage: result.errorMessage,
-        success: false,
-      };
-    } else if (result.success) {
-      return {
-        success: true,
-      };
+    if (res.success) {
+      return res;
     }
 
     return {
       success: false,
-      errorMessage: 'خطایی رخ داد، مجددا تلاش کنید',
+      errorMessage: res?.errorMessage || 'خطایی رخ داد، مجددا تلاش کنید',
     };
   } catch (error) {
     // console.log(error);
