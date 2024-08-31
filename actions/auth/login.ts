@@ -2,10 +2,10 @@
 
 import { cookies } from 'next/headers';
 import { db } from '@/drizzle/db';
-import User from '@/drizzle/schemas/user';
 import { eq } from 'drizzle-orm';
 import { createSession } from './auth';
 import { utcDate } from '@/lib/date';
+import { User } from '@/drizzle/schemas/drizzle';
 
 type LoginProps = {
   id: number;
@@ -27,7 +27,7 @@ export const Login = async (
       .update(User)
       .set({
         session: sessionData.encryptedData,
-        sessionExpires: utcDate(),
+        updatedAt: utcDate(),
       })
       .where(eq(User.phoneNumber, props.phoneNumber))
       .returning();

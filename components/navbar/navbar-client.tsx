@@ -9,6 +9,7 @@ import { LogIn, LogOut, ShoppingCart, User } from 'lucide-react';
 import { Button } from '../ui/button';
 import { UserSessionType } from '@/actions/auth/auth';
 import UserAvatar from '../user/user-avatar';
+import NavCart from '../cart/nav-cart';
 
 type NavbarClientProps = {
   session: {
@@ -34,11 +35,8 @@ const NavbarClient = ({ session }: NavbarClientProps) => {
       {session ? (
         <div className='flex gap-2'>
           <UserAvatar session={session} />
-          <Link href='/cart'>
-            <Button variant='ghost' size='icon'>
-              <ShoppingCart />
-            </Button>
-          </Link>
+          <NavCart />
+      
         </div>
       ) : (
         <Link

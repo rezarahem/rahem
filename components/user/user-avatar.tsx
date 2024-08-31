@@ -105,7 +105,7 @@ const UserAvatar = ({ session }: UserAvatarProps) => {
               delay: 0.05,
             }}
             ref={modelRef}
-            className='fixed inset-x-0 -bottom-5 z-50 w-full rounded-xl rounded-b-none border bg-white opacity-0 shadow-md dark:bg-slate-900 max-sm:h-96 sm:absolute sm:inset-auto sm:left-0 sm:top-10 sm:w-80 sm:rounded-md'
+            className='fixed inset-x-0 -bottom-5 z-50 w-full rounded-xl rounded-b-none border bg-white opacity-0 shadow-md dark:bg-slate-900 max-sm:h-96 sm:absolute sm:inset-auto sm:-left-10 sm:top-10 sm:w-80 sm:rounded-md'
           >
             <div className='flex items-center gap-x-3 border-b p-4'>
               <div className='relative flex size-14 items-center justify-center overflow-hidden rounded-full border-2 border-blue-600'>

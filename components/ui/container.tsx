@@ -18,7 +18,7 @@ const Container = ({
   return (
     <div
       className={cn(
-        'mx-auto max-w-7xl px-5 md:px-3',
+        'mx-auto max-w-7xl px-3',
 
         className,
         {

@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { ToastProvider } from '@/providers/toast-provider';
 import NextTopLoader from 'nextjs-toploader';
+import CheckUserSession from '@/components/user/check-user-session';
 
 const mainFont = localFont({
   src: [
@@ -25,11 +26,11 @@ export const metadata: Metadata = {
   description: 'rahem.dev',
 };
 
-export default function RootLayout({
+const RootLayout = async ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
   return (
     <html dir='rtl' lang='fa-Ir' suppressHydrationWarning>
       <body className={cn('font-sanX', mainFont.variable)}>
@@ -46,4 +47,6 @@ export default function RootLayout({
       </body>
     </html>
   );
-}
+};
+
+export default RootLayout;

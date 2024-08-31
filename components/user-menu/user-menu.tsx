@@ -1,3 +1,4 @@
+import { UserSessionType } from '@/actions/auth/auth';
 import {
   phoneNumberWithSpaces,
   toPersianNumberStr,
@@ -7,12 +8,8 @@ import Link from 'next/link';
 
 type UserMenuProps = {
   session: {
-    user: {
-      id: number;
-      phoneNumber: string;
-      userRole?: string;
-    };
-    expires: string;
+    user: UserSessionType;
+    expires: Date;
   } | null;
 };
 

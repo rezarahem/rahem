@@ -1,13 +1,12 @@
 import {
   index,
   pgTable,
-  primaryKey,
   serial,
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
 
-const User = pgTable(
+export const User = pgTable(
   'user',
   {
     id: serial('id').primaryKey(),
@@ -27,4 +26,3 @@ const User = pgTable(
   },
 );
 
-export default User;

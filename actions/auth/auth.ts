@@ -8,6 +8,7 @@ import {
 } from 'jose';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
+import axios from 'axios';
 
 export type UserSessionType = {
   id: number;
@@ -63,6 +64,7 @@ export const decryptData = async (encryptedData: string): Promise<any> => {
 export const updateSession = async (request: NextRequest) => {
   const reqSession = request.cookies.get('session')?.value;
   if (!reqSession) return;
+
   const verifiedSession = await verify(reqSession);
 
   verifiedSession.expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);

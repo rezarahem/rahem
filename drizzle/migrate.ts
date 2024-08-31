@@ -19,7 +19,6 @@ const main = async () => {
   } finally {
     await migrationPool.end();
   }
-
   process.exit(0);
 };
 

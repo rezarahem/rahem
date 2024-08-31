@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import UserAvatar from './user-avatar';
 import { LogIn } from 'lucide-react';
+import { getSession } from '@/actions/auth/auth';
 
 const User = async () => {
-  const session = null;
+  const session = await getSession();
 
   if (!session?.user || !session)
     return (

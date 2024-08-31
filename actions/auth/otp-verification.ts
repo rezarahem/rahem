@@ -2,9 +2,9 @@
 
 import { db } from '@/drizzle/db';
 import { eq } from 'drizzle-orm';
-import User from '@/drizzle/schemas/user';
-import { hasTwoMinutesPassed, utcUnix } from '@/lib/date';
+import { hasTwoMinutesPassed, utcDate, utcUnix } from '@/lib/date';
 import { Login } from './login';
+import { User } from '@/drizzle/schemas/drizzle';
 // import { login } from './auth';
 
 export const OtpVerification = async (

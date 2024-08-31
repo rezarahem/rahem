@@ -1,5 +1,9 @@
-const CoursesPage = () => {
-  return <div>Courses</div>;
+import { redirect } from 'next/navigation';
+
+const Courses = () => {
+  redirect('/courses/nextjs');
+
+  return <div></div>;
 };
 
-export default CoursesPage;
+export default Courses;

@@ -2,10 +2,10 @@
 const nextConfig = {
     images: {
         remotePatterns: [
-        //   {
-        //     protocol: 'https',
-        //     hostname: 'rahem.storage.iran.liara.space',
-        //   },
+          {
+            protocol: 'https',
+            hostname: 'rahem-storage.storage.iran.liara.space',
+          },
           {
             protocol: 'https',
             hostname: 'avatars.githubusercontent.com',
