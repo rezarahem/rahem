@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/drizzle/db';
-import { DiscountCode } from '@/drizzle/schemas/drizzle';
+import { DiscountCode } from '@/drizzle/drizzle';
 import { eq } from 'drizzle-orm';
 
 type DiscountCodeType = typeof DiscountCode.$inferSelect;

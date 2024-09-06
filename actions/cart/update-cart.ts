@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/drizzle/db';
-import { Cart, CourseToCart } from '@/drizzle/schemas/drizzle';
+import { Cart, CourseToCart } from '@/drizzle/drizzle';
 import { and, eq } from 'drizzle-orm';
 
 export const AddToCartAction = async (

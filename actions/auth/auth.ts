@@ -8,7 +8,6 @@ import {
 } from 'jose';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
-import axios from 'axios';
 
 export type UserSessionType = {
   id: number;
@@ -16,9 +15,8 @@ export type UserSessionType = {
   phoneNumber: string;
 };
 
-const key = new TextEncoder().encode(process.env.SECRET_KEY);
-
-const importKy = async () => {
+const vKy = new TextEncoder().encode(process.env.SIGN_KEY);
+const eKy = async () => {
   return await importJWK(
     {
       kty: process.env.ET,
@@ -33,27 +31,28 @@ export const sign = async (payload: any) => {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(key);
+    .sign(vKy);
 };
 
 export const verify = async (
   input: string,
 ): Promise<{ data: string; expires: Date }> => {
-  const { payload } = await jwtVerify(input, key, {
+  const { payload } = await jwtVerify(input, vKy, {
     algorithms: ['HS256'],
   });
   return payload as { data: string; expires: Date };
 };
 
 export const encryptData = async (payload: string): Promise<string> => {
-  const key = await importKy();
+  const key = await eKy();
   const jwe = await new CompactEncrypt(new TextEncoder().encode(payload))
     .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
     .encrypt(key);
   return jwe.split('..')[1];
 };
+
 export const decryptData = async (encryptedData: string): Promise<any> => {
-  const key = await importKy();
+  const key = await eKy();
   const sult = process.env.ES;
   const jwe = `${sult}..${encryptedData}`;
   const { plaintext } = await compactDecrypt(jwe, key);

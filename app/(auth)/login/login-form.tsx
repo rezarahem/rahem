@@ -7,11 +7,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { regexOnlyDigits, toEnglishNumberStr } from '@/lib/persian-string';
 import {
-  OtpSchema,
-  PhoneNumberSchema,
-  UserNameSchema,
-} from '@/zod/login-schema';
-import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
@@ -21,6 +16,7 @@ import { useRouter } from 'next/navigation';
 
 import { useEffect, useState, useTransition } from 'react';
 import toast from 'react-hot-toast';
+import { OtpSchema, PhoneNumberSchema, UserNameSchema } from '@/zod/zod';
 
 const LoginForm = () => {
   // comp states

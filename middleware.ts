@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession, updateSession } from './actions/auth/auth';
 
-import { DEAFAULT_LOGIN_REDIRECT, authRoutes, publicRoutes } from '@/routes';
+import {
+  DEAFAULT_LOGIN_REDIRECT,
+  authRoutes,
+  publicRoutes,
+  coursesRoutes,
+} from '@/routes';
 
 export const middleware = async (req: NextRequest) => {
   // try {
@@ -12,7 +17,8 @@ export const middleware = async (req: NextRequest) => {
   const session = await getSession();
   const isLogin = session && session?.user ? true : false;
   const isAuthRoutes = authRoutes.includes(pathname);
-  const isPublicRoutes = publicRoutes.includes(pathname);
+  const isPublicRoutes =
+    publicRoutes.includes(pathname) || pathname.startsWith(coursesRoutes);
 
   if (isAuthRoutes) {
     if (isLogin) {
@@ -29,23 +35,8 @@ export const middleware = async (req: NextRequest) => {
   //   return Response.redirect(new URL('/user', nextUrl));
 
   return res;
-  // return NextResponse.next();
-  // } catch (error) {
-  // console.error('Middleware error:', error);
-  // return NextResponse.error();
-  // }
 };
 
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
-  // matcher: ['/', '/login', '/about-us'],
-  // matcher: ['/((?!_next|api/).*)'],
-  // matcher: ['/((?!.*\\..*|_next).*)', '/', '/(api|trpc)(.*)'],
 };
-
-// import { NextRequest } from 'next/server';
-// import { updateSession } from './actions/auth/auth';
-
-// export async function middleware(request: NextRequest) {
-//   return await updateSession(request);
-// }

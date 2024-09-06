@@ -1,5 +1,5 @@
 import { integer, pgTable, serial } from 'drizzle-orm/pg-core';
-import { CourseToCart, User } from '../drizzle';
+import { CourseToCart, User } from '../../drizzle';
 import { relations } from 'drizzle-orm';
 
 export const Cart = pgTable('cart', {

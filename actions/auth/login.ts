@@ -5,7 +5,7 @@ import { db } from '@/drizzle/db';
 import { eq } from 'drizzle-orm';
 import { createSession } from './auth';
 import { utcDate } from '@/lib/date';
-import { User } from '@/drizzle/schemas/drizzle';
+import { User } from '@/drizzle/drizzle';
 
 type LoginProps = {
   id: number;

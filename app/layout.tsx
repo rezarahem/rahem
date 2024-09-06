@@ -5,7 +5,6 @@ import { cn } from '@/lib/utils';
 import { ThemeProvider } from '@/providers/theme-provider';
 import { ToastProvider } from '@/providers/toast-provider';
 import NextTopLoader from 'nextjs-toploader';
-import CheckUserSession from '@/components/user/check-user-session';
 
 const mainFont = localFont({
   src: [

@@ -5,7 +5,7 @@ import {
   smallint,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { CourseChapter } from '../drizzle';
+import { CourseChapter } from '../../drizzle';
 import { relations } from 'drizzle-orm';
 
 export const CourseSubchapter = pgTable('course_subchpater', {

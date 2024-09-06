@@ -6,7 +6,7 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
-import { Course, CourseSubchapter } from '../drizzle';
+import { Course, CourseSubchapter } from '../../drizzle';
 
 export const CourseChapter = pgTable('course_chpater', {
   id: serial('id').primaryKey(),

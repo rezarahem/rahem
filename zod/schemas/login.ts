@@ -6,6 +6,8 @@ export const PhoneNumberSchema = z.string().regex(/^09\d{9}$/, {
 
 const persianAlphabet = 'اآبپتثجچحخدذرزژسشصضطظعغفقکگلمنوهیءئإأؤًٌٍَُِّْٰۀٔڤڠ';
 const persianCharRegex = new RegExp(`^[${persianAlphabet}\\s]+$`);
+
+
 export const UserNameSchema = z
   .string()
   .min(1, 'ثبت نام الزامی است.')

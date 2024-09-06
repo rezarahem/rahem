@@ -39,8 +39,9 @@ const CoursePage = async ({
     courseAddressName: course.courseAddressName,
     courseTitle: course.title,
     price: course.price,
-    sepcialPrice: course.specialPrice,
+    sepcialPrice: course.specialPrice ?? 0,
     thumbnailImage: course.thumbnailImage,
+    spotPlayerId: course.spotPlayerId,
     pending: true,
   } satisfies CartCourseType;
 

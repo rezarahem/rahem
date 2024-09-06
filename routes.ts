@@ -1,5 +1,6 @@
 // don't skip the the / bitch
-export const publicRoutes = ['/', 'about-us'];
+export const publicRoutes = ['/', '/about-us', '/courses'];
+export const coursesRoutes = '/courses';
 
 export const authRoutes = ['/login'];
 

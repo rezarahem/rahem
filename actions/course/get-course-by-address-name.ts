@@ -1,7 +1,7 @@
 'use server';
 
 import { db } from '@/drizzle/db';
-import { Course } from '@/drizzle/schemas/drizzle';
+import { Course } from '@/drizzle/drizzle';
 import { eq } from 'drizzle-orm';
 
 export const GetCourseByAddressName = async (courseAddressName: string) => {

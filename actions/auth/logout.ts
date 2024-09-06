@@ -6,7 +6,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getSession, verify } from './auth';
 import { utcDate } from '@/lib/date';
-import { User } from '@/drizzle/schemas/drizzle';
+import { User } from '@/drizzle/drizzle';
 
 export const Logout = async () => {
   try {
@@ -28,9 +28,8 @@ export const Logout = async () => {
       )
       .returning();
 
-
     cookies().set('session', '', { expires: new Date(0) });
- 
+
     redirect('/');
   } catch (error) {}
 };

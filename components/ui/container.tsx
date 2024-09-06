@@ -19,7 +19,6 @@ const Container = ({
     <div
       className={cn(
         'mx-auto max-w-7xl px-3',
-
         className,
         {
           'h-full': isFullHeight,

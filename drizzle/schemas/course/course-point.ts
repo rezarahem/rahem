@@ -7,7 +7,7 @@ import {
   text,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { Course } from '../drizzle';
+import { Course } from '../../drizzle';
 
 export const CoursePoint = pgTable('course_point', {
   id: serial('id').primaryKey(),

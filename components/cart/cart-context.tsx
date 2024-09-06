@@ -12,16 +12,15 @@ import {
   AddToCartAction,
   RemoveFromCartAction,
 } from '@/actions/cart/update-cart';
-import { redirect } from 'next/navigation';
-import { useRouter } from 'next/navigation';
 
 export type CartCourseType = {
   courseId: number;
   courseTitle: string;
   courseAddressName: string;
   price: number;
-  sepcialPrice: number | null;
+  sepcialPrice: number;
   thumbnailImage: string;
+  spotPlayerId: string
   pending: boolean;
 };
 
@@ -36,6 +35,7 @@ type ContextType = {
   cartId: number | undefined;
   userId: number | undefined;
   totalPrice: number;
+  discountedPrice: number;
   courses: CartCourseType[];
   cartPending: boolean;
   addCourse: (course: CartCourseType) => void;
@@ -61,13 +61,16 @@ export const CartProvider = ({
 }: ProviderProps) => {
   const [courseState, setCourseState] = useState(initialCourses ?? []);
   const [cartPending, setCartPending] = useState(false);
-  const router = useRouter();
 
-  const totalPrice = courseState?.reduce(
-    (total, course) =>
-      total + (course.sepcialPrice ? course.sepcialPrice : course.price),
-    0,
-  );
+  // const totalPrice = courseState?.reduce(
+  //   (total, course) =>
+  //     total + (course.sepcialPrice ? course.sepcialPrice : course.price),
+  //   0,
+  // );
+
+  const totalPrice = courseState.reduce((t, c) => t + c.price, 0);
+
+  const discountedPrice = courseState.reduce((t, c) => t + c.sepcialPrice, 0);
 
   const addCourse = async (course: CartCourseType) => {
     try {
@@ -122,6 +125,7 @@ export const CartProvider = ({
       cartId,
       userId,
       totalPrice,
+      discountedPrice,
       cartPending,
       courses: courseState,
       addCourse,

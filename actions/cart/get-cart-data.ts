@@ -2,7 +2,7 @@
 
 import { CartCourseType } from '@/components/cart/cart-context';
 import { db } from '@/drizzle/db';
-import { Cart } from '@/drizzle/schemas/drizzle';
+import { Cart } from '@/drizzle/drizzle';
 import { eq } from 'drizzle-orm';
 
 export const GetCartData = async (
@@ -36,7 +36,7 @@ export const GetCartData = async (
       courseAddressName: course.courseAddressName,
       price: course.price,
       thumbnailImage: course.thumbnailImage,
-      sepcialPrice: course.specialPrice,
+      sepcialPrice: course.specialPrice ?? 0,
       pending: false,
     })) satisfies CartCourseType[] | undefined;
 

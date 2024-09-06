@@ -16,12 +16,33 @@ import { CircleCheck } from 'lucide-react';
 import RemoveBtnCourseFromCartBtn from './remove-course-btn';
 import { Input } from '../ui/input';
 import { CheckDiscount } from '@/actions/cart/check-discount';
+import {
+  CreateOrder,
+  OrderItemType,
+  OrderType,
+} from '@/actions/order/create-order';
+import { useRouter } from 'next/navigation';
+
+const calculatePaidPrice = (price: number, specialPrice?: number): number => {
+  return specialPrice !== undefined &&
+    specialPrice !== null &&
+    specialPrice !== 0
+    ? specialPrice
+    : price;
+};
 
 const CartClient = () => {
-  const { totalPrice, courses } = useCart();
+  const { totalPrice, courses, userId, discountedPrice } = useCart();
+
   const [isValidDiscount, setIsValidDiscount] = useState(false);
   const [userDiscountCode, setUserDiscountCode] = useState('');
-  const [price, setPrice] = useState(totalPrice);
+  const [special, setSpecial] = useState(discountedPrice);
+  const [finalPrice, setFinalPrice] = useState(
+    calculatePaidPrice(totalPrice, discountedPrice),
+  );
+
+  const router = useRouter();
+
   const [isPending, startTransition] = useTransition();
 
   const validateDiscount = () => {
@@ -37,45 +58,67 @@ const CartClient = () => {
         setIsValidDiscount(res.success);
 
         if (code.isPercentage) {
-          setPrice(
+          setFinalPrice(
             calculateDiscountSpecialPriceFromPercentage(
-              price,
+              finalPrice,
               res.discountCode.discount,
             ),
           );
         } else {
-          setPrice((prev) => prev - code.discount);
+          setFinalPrice((prev) => prev - code.discount);
         }
         toast.success('تحفیف ثبت شد');
       });
     } catch (error) {
       toast.error('خطایی رخ داد');
     }
-    // setUserDiscountCode('');
-    // toast.error('کد تخفیف نامعتبر');
-    // const code = discountCodes.find(
-    //   (code) => code.key === userDiscount.toLowerCase(),
-    // );
-    // if (code) {
-    //   setIsValidDiscount(true);
-    //   if (code.isPercentage) {
-    //     setPrice(
-    //       calculateDiscountSpecialPriceFromPercentage(price, +code.discount),
-    //     );
-    //   } else {
-    //     setPrice(price - +code.discount);
-    //   }
-    //   toast.success('تحفیف ثبت شد');
-    // } else {
-    //   setUserDiscountCode('');
-    //   toast.error('کد تخفیف نامعتبر');
-    // }
   };
 
   const disableDiscount = () => {
     setUserDiscountCode('');
-    setPrice(totalPrice);
+    setSpecial(discountedPrice);
     setIsValidDiscount(false);
+  };
+
+  const pay = () => {
+    try {
+      startTransition(async () => {
+        if (!userId) return;
+
+        const userOrder = {
+          userId,
+          totalPrice,
+          discountedPrice,
+          finalPrice,
+        } satisfies OrderType;
+
+        const orderItems = courses.map((c) => ({
+          courseId: c.courseId,
+          itemPrice: c.price,
+          discountedItemPrice: c.sepcialPrice,
+          finalItemPrice: c.sepcialPrice ? c.sepcialPrice : c.price,
+          spotPlayerId: c.spotPlayerId,
+        })) satisfies OrderItemType[];
+
+        const res = await CreateOrder({
+          order: userOrder,
+          orderItems,
+        });
+
+        if (!res || !res.success) {
+          toast.error(res.errorMessage || 'خطایی رخ داد');
+          return;
+        }
+
+        if (res.success && res.payLink) {
+          router.push(res.payLink);
+        } else {
+          toast.error('خطایی رخ داد');
+        }
+      });
+    } catch (error) {
+      toast.error('خطایی رخ داد');
+    }
   };
 
   if (totalPrice === 0)
@@ -188,13 +231,42 @@ const CartClient = () => {
               <div className='flex items-center justify-between py-5'>
                 <p className='font-bold'>مبلغ قابل پرداخت</p>
                 <div className='space-y-1'>
-                  <div className='flex items-center gap-x-2'>
+                  <div className='flex items-center justify-between gap-x-3'>
+                    <div className='space-y-1'>
+                      <div className='flex items-center gap-x-2'>
+                        <p className='text-lg font-bold lg:text-xl'>
+                          {addCommaAndRetuenPersianStringNumber(
+                            `${finalPrice}`,
+                          )}
+                        </p>
+                        <p className='text-xs text-gray-500 lg:text-sm'>
+                          تومانء
+                        </p>
+                      </div>
+                      {discountedPrice ? (
+                        <div className='flex items-center justify-between'>
+                          <del className='text-xs text-gray-500 lg:text-sm'>
+                            {addCommaAndRetuenPersianStringNumber(
+                              `${totalPrice}`,
+                            )}
+                          </del>
+                          <span className='flex items-center rounded-full bg-blue-600 px-3 pt-[3px] text-xs text-white lg:text-sm'>
+                            {calculateDiscountPercentageFromSpecialPrice(
+                              +totalPrice,
+                              +discountedPrice,
+                            )}
+                          </span>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                  {/* <div className='flex items-center gap-x-2'>
                     <p className='text-lg font-bold'>
-                      {addCommaAndRetuenPersianStringNumber(`${price}`)}
+                      {addCommaAndRetuenPersianStringNumber(`${finalPrice}`)}
                     </p>
                     <p className='mr-auto text-sm text-gray-500'>تومانء</p>
-                  </div>
-                  {isValidDiscount ? (
+                  </div> */}
+                  {/* {isValidDiscount ? (
                     <div className='flex items-center justify-between gap-x-2'>
                       <del className='text-xs text-gray-500 lg:text-sm'>
                         {addCommaAndRetuenPersianStringNumber(`${totalPrice}`)}
@@ -202,21 +274,15 @@ const CartClient = () => {
                       <span className='flex items-center rounded-full bg-blue-600 px-3 pt-[2px] text-xs text-white lg:text-sm'>
                         {calculateDiscountPercentageFromSpecialPrice(
                           totalPrice as number,
-                          +price,
+                          +finalPrice,
                         )}
                       </span>
                     </div>
-                  ) : null}
+                  ) : null} */}
                 </div>
               </div>
               <div className='mt-5'>
-                <Button
-                  disabled={isPending}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // onPay();
-                  }}
-                >
+                <Button disabled={isPending} onClick={pay}>
                   پرداخت
                 </Button>
               </div>
