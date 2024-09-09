@@ -5,7 +5,7 @@ import { getSession } from '../auth/auth';
 import { AuthorizeUser } from '../auth/authorize-user';
 import { db } from '@/drizzle/db';
 import { and, eq } from 'drizzle-orm';
-import { License, Order } from '@/drizzle/drizzle';
+import { License, Order, UserCourse } from '@/drizzle/drizzle';
 
 type zarinpalRes = {
   code: 100 | 101;
@@ -47,6 +47,7 @@ export const PaymentVerification = async (
       with: {
         orderItem: {
           columns: {
+            courseId: true,
             spotPlayerId: true,
           },
         },
@@ -78,7 +79,7 @@ export const PaymentVerification = async (
       };
     }
 
-    if (code === 100) {
+    if (code === 101) {
       const spotPlayerIds = order.orderItem.map(
         (i) => i.spotPlayerId,
       ) satisfies string[];
@@ -86,7 +87,7 @@ export const PaymentVerification = async (
       const courseLicense = await axios.post(
         'https://panel.spotplayer.ir/license/edit/',
         {
-          // test: true,
+          test: true,
           course: spotPlayerIds,
           name: session.user.userName,
           watermark: { texts: [{ text: session.user.phoneNumber }] },
@@ -105,6 +106,19 @@ export const PaymentVerification = async (
           key: courseLicense.data.key as string,
         })
         .returning();
+
+      const userCourse = await db
+        .insert(UserCourse)
+        .values(
+          order.orderItem.map((item) => ({
+            courseId: item.courseId,
+            userId: order.userId,
+          })),
+        )
+        .returning();
+
+      // if(!userCourse.length) {
+      // }
 
       const [updatedOrder] = await db
         .update(Order)
@@ -132,7 +146,7 @@ export const PaymentVerification = async (
       };
     }
 
-    if (code === 101) {
+    if (code === 100) {
       return {
         success: true,
         code101: true,
@@ -144,6 +158,8 @@ export const PaymentVerification = async (
       errorMessage: 'خطایی رخ داد',
     };
   } catch (error) {
+    console.log(error);
+
     return {
       success: false,
       errorMessage: 'خطایی رخ داد',

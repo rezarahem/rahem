@@ -19,6 +19,9 @@ import { CartCourseType, useCart } from '@/components/cart/cart-context';
 import AddToCart from '@/components/cart/add-to-cart';
 import { getSession } from '@/actions/auth/auth';
 import Link from 'next/link';
+import { db } from '@/drizzle/db';
+import { UserCourse } from '@/drizzle/drizzle';
+import { GetUserCourse } from '@/actions/course/get-user-course';
 
 const CoursePage = async ({
   params,
@@ -31,6 +34,8 @@ const CoursePage = async ({
   const courseAddressName = params.courseAddressName;
 
   const course = await GetCourseByAddressName(courseAddressName);
+
+  const isStudent = await GetUserCourse(session?.user.id, course?.id);
 
   if (!course) notFound();
 
@@ -98,10 +103,10 @@ const CoursePage = async ({
           <div className='fixed bottom-0 left-0 z-10 w-full border-t bg-white p-3 dark:bg-slate-950 md:static md:mt-auto md:border-none md:p-0'>
             <div className='flex items-center justify-between'>
               {session?.user.id ? (
-                <AddToCart course={courseForCart} />
+                <AddToCart course={courseForCart} isStudet={isStudent.code} />
               ) : (
                 <Link href='/login'>
-                  <Button>ثبت نام</Button>
+                  <Button>ورود</Button>
                 </Link>
               )}
               <div className='md:hidden lg:block'>{price}</div>

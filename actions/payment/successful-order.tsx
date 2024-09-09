@@ -1,11 +1,15 @@
+'use client';
+
+import { useCart } from '@/components/cart/cart-context';
 import { Button } from '@/components/ui/button';
 import Container from '@/components/ui/container';
 import {
   addCommaAndRetuenPersianStringNumber,
   toPersianNumberStr,
 } from '@/lib/persian-string';
-import { CircleCheck, CircleX } from 'lucide-react';
+import { CircleCheck } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 type SuccessfulOrderProps = {
   orderFinalPrice: number;
@@ -18,6 +22,12 @@ const SuccessfulOrder = ({
   orderNumber,
   orderRefId,
 }: SuccessfulOrderProps) => {
+  const { clearCart } = useCart();
+
+  useEffect(() => {
+    clearCart();
+  }, []);
+
   return (
     <Container className='py-5'>
       <div className='mx-auto max-w-lg space-y-10 rounded-md border p-4'>

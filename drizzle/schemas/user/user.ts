@@ -1,3 +1,4 @@
+import { Order, UserCourse } from '@/drizzle/drizzle';
 import { relations } from 'drizzle-orm';
 import {
   index,
@@ -6,7 +7,6 @@ import {
   timestamp,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { Order } from '../../drizzle';
 
 export const User = pgTable(
   'user',
@@ -30,4 +30,5 @@ export const User = pgTable(
 
 export const UserRelations = relations(User, ({ many, one }) => ({
   userOrder: many(Order),
+  userCourse: many(UserCourse),
 }));

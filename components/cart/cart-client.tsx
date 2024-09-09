@@ -10,7 +10,7 @@ import {
   calculateDiscountPercentageFromSpecialPrice,
   calculateDiscountSpecialPriceFromPercentage,
 } from '@/lib/persian-string';
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import toast from 'react-hot-toast';
 import { CircleCheck } from 'lucide-react';
 import RemoveBtnCourseFromCartBtn from './remove-course-btn';
@@ -37,13 +37,18 @@ const CartClient = () => {
   const [isValidDiscount, setIsValidDiscount] = useState(false);
   const [userDiscountCode, setUserDiscountCode] = useState('');
   const [special, setSpecial] = useState(discountedPrice);
-  const [finalPrice, setFinalPrice] = useState(
-    calculatePaidPrice(totalPrice, discountedPrice),
-  );
+  const [finalPrice, setFinalPrice] = useState(0);
+  // const [finalPrice, setFinalPrice] = useState(
+  //   calculatePaidPrice(totalPrice, discountedPrice),
+  // );
 
   const router = useRouter();
 
   const [isPending, startTransition] = useTransition();
+
+  useEffect(() => {
+    setFinalPrice(calculatePaidPrice(totalPrice, discountedPrice));
+  }, [totalPrice, discountedPrice]);
 
   const validateDiscount = () => {
     try {

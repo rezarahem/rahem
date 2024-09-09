@@ -23,3 +23,4 @@ export { Order, OrderRelations } from './schemas/order/order';
 export { OrderItem, OrderItemRelations } from './schemas/order/order-item';
 export { User, UserRelations } from './schemas/user/user';
 export { License } from './schemas/license/license';
+export { UserCourse, UserCourseRelations } from './schemas/user/user-course';

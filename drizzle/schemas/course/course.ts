@@ -6,6 +6,7 @@ import {
   CourseToCart,
   CourseChapter,
   OrderItem,
+  UserCourse,
 } from '../../drizzle';
 
 export const Course = pgTable('course', {
@@ -27,4 +28,5 @@ export const CourseRelations = relations(Course, ({ many, one }) => ({
   coursePoints: many(CoursePoint),
   courseToCart: many(CourseToCart),
   orderItem: many(OrderItem),
+  userCourse: many(UserCourse)
 }));

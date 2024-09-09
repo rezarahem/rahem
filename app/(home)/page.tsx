@@ -1,8 +1,6 @@
 import { FileUp, HandCoins, Headset, Target } from 'lucide-react';
 import Container from '@/components/ui/container';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { encryptData } from '@/actions/auth/auth';
 
 const iconFeatures: {
   label: string;

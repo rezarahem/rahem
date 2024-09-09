@@ -23,10 +23,10 @@ const NavbarClient = ({ session }: NavbarClientProps) => {
     <Container
       defualtPY
       isFullHeight
-      className='flex items-center justify-between gap-4'
+      className='flex items-center justify-between'
     >
       <div className='flex items-center gap-2 md:gap-5'>
-        <Drawer session={session} />
+        <Drawer />
         <div className='max-sm:hidden'>
           <NavLinks />
         </div>
@@ -36,7 +36,6 @@ const NavbarClient = ({ session }: NavbarClientProps) => {
         <div className='flex gap-2'>
           <UserAvatar session={session} />
           <NavCart />
-      
         </div>
       ) : (
         <Link

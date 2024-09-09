@@ -12,7 +12,7 @@ const NavCart = () => {
   return (
     <Button className='relative' variant='ghost' size='icon'>
       <Link href='/cart'>
-        <ShoppingCart />
+        <ShoppingCart className='max-sm:size-5' />
         {courses.length > 0 && (
           <div className='absolute right-0 top-0 flex size-4 items-center justify-center rounded-full bg-blue-500'>
             <span
