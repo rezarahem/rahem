@@ -7,8 +7,10 @@ import { Button } from '../ui/button';
 import Image from 'next/image';
 import {
   addCommaAndRetuenPersianStringNumber,
-  calculateDiscountPercentageFromSpecialPrice,
-  calculateDiscountSpecialPriceFromPercentage,
+  calculateDiscountPercentageFromFullSpecialPrice,
+  calculateDiscountPercentageFromSpecialPriceDif,
+  calculateFinalSpecialPriceFromPercentageDiscount,
+  calculateSpecialPriceDiscountFromPercentage,
 } from '@/lib/persian-string';
 import { useEffect, useState, useTransition } from 'react';
 import toast from 'react-hot-toast';
@@ -23,32 +25,38 @@ import {
 } from '@/actions/order/create-order';
 import { useRouter } from 'next/navigation';
 
-const calculatePaidPrice = (price: number, specialPrice?: number): number => {
-  return specialPrice !== undefined &&
-    specialPrice !== null &&
-    specialPrice !== 0
-    ? specialPrice
-    : price;
+const calculatePaidPrice = (
+  price: number,
+  specialPrice: number,
+  userDiscountPrice: number,
+): number => {
+  return price - specialPrice - userDiscountPrice;
+};
+
+const calculateSpecialPrice = (
+  specialPrice: number,
+  userDiscountPrice: number,
+) => {
+  return specialPrice + userDiscountPrice;
 };
 
 const CartClient = () => {
-  const { totalPrice, courses, userId, discountedPrice } = useCart();
+  const { price, courses, userId, specialPrice } = useCart();
 
   const [isValidDiscount, setIsValidDiscount] = useState(false);
   const [userDiscountCode, setUserDiscountCode] = useState('');
-  const [special, setSpecial] = useState(discountedPrice);
+
+  const [userDiscountPrice, setUserDiscountPrice] = useState(0);
   const [finalPrice, setFinalPrice] = useState(0);
-  // const [finalPrice, setFinalPrice] = useState(
-  //   calculatePaidPrice(totalPrice, discountedPrice),
-  // );
+  const [showSpecialPrice, setShowSpecialPrice] = useState(0);
 
   const router = useRouter();
-
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
-    setFinalPrice(calculatePaidPrice(totalPrice, discountedPrice));
-  }, [totalPrice, discountedPrice]);
+    setFinalPrice(calculatePaidPrice(price, specialPrice, userDiscountPrice));
+    setShowSpecialPrice(calculateSpecialPrice(specialPrice, userDiscountPrice));
+  }, [price, specialPrice, userDiscountPrice]);
 
   const validateDiscount = () => {
     try {
@@ -59,18 +67,20 @@ const CartClient = () => {
           toast.error(res.errorMessage || 'خطایی رخ داد');
           return;
         }
+
         const code = res.discountCode;
         setIsValidDiscount(res.success);
 
         if (code.isPercentage) {
-          setFinalPrice(
-            calculateDiscountSpecialPriceFromPercentage(
+          setUserDiscountPrice(
+            calculateSpecialPriceDiscountFromPercentage(
               finalPrice,
               res.discountCode.discount,
             ),
           );
         } else {
-          setFinalPrice((prev) => prev - code.discount);
+          setUserDiscountPrice(code.discount);
+          // setFinalPrice((prev) => prev - code.discount);
         }
         toast.success('تحفیف ثبت شد');
       });
@@ -81,7 +91,7 @@ const CartClient = () => {
 
   const disableDiscount = () => {
     setUserDiscountCode('');
-    setSpecial(discountedPrice);
+    setUserDiscountPrice(0);
     setIsValidDiscount(false);
   };
 
@@ -92,16 +102,14 @@ const CartClient = () => {
 
         const userOrder = {
           userId,
-          totalPrice,
-          discountedPrice,
-          finalPrice,
+          price: finalPrice,
+          specialPrice: showSpecialPrice,
         } satisfies OrderType;
 
         const orderItems = courses.map((c) => ({
           courseId: c.courseId,
           itemPrice: c.price,
-          discountedItemPrice: c.sepcialPrice,
-          finalItemPrice: c.sepcialPrice ? c.sepcialPrice : c.price,
+          itemSpecialPrice: c.sepcialPrice,
           spotPlayerId: c.spotPlayerId,
         })) satisfies OrderItemType[];
 
@@ -126,7 +134,7 @@ const CartClient = () => {
     }
   };
 
-  if (totalPrice === 0)
+  if (price === 0)
     return (
       <Container>
         <div className='mx-auto flex h-60 flex-col items-center justify-center gap-y-3'>
@@ -153,16 +161,16 @@ const CartClient = () => {
               key={c.courseId}
               className='flex flex-col justify-between gap-x-3 space-y-5 rounded-md border p-4 shadow-sm sm:flex-row sm:space-y-0'
             >
-              <div className='grid grid-cols-5 items-center gap-3'>
-                <div className='aspect-h-9 aspect-w-16 relative col-span-2 overflow-hidden rounded-md'>
+              <div className='max flex flex-col gap-3 sm:flex-row sm:items-center'>
+                <div className='relative h-[6.3rem] w-44 flex-shrink-0 overflow-hidden rounded-md'>
                   <Image
                     src={c.thumbnailImage}
                     alt={c.courseTitle}
                     fill
-                    sizes='70vw'
+                    className='object-cover'
                   />
                 </div>
-                <div className='col-span-3'>
+                <div>
                   <p className='text-lg font-extrabold'>{c.courseTitle}</p>
                 </div>
               </div>
@@ -172,7 +180,7 @@ const CartClient = () => {
                   <div className='flex items-center gap-x-2'>
                     <p className='text-lg font-bold lg:text-xl'>
                       {addCommaAndRetuenPersianStringNumber(
-                        `${c.sepcialPrice ? c.sepcialPrice : c.price}`,
+                        `${c.sepcialPrice ? c.price - c.sepcialPrice : c.price}`,
                       )}
                     </p>
                     <p className='text-xs text-gray-500 lg:text-sm'>تومانء</p>
@@ -183,9 +191,9 @@ const CartClient = () => {
                         {addCommaAndRetuenPersianStringNumber(`${c?.price}`)}
                       </del>
                       <span className='flex items-center rounded-full bg-blue-600 px-3 pt-[3px] text-xs text-white lg:text-sm'>
-                        {calculateDiscountPercentageFromSpecialPrice(
-                          +c.price,
-                          +c.sepcialPrice,
+                        {calculateDiscountPercentageFromSpecialPriceDif(
+                          c.price,
+                          c.sepcialPrice,
                         )}
                       </span>
                     </div>
@@ -248,42 +256,21 @@ const CartClient = () => {
                           تومانء
                         </p>
                       </div>
-                      {discountedPrice ? (
+                      {showSpecialPrice ? (
                         <div className='flex items-center justify-between'>
                           <del className='text-xs text-gray-500 lg:text-sm'>
-                            {addCommaAndRetuenPersianStringNumber(
-                              `${totalPrice}`,
-                            )}
+                            {addCommaAndRetuenPersianStringNumber(`${price}`)}
                           </del>
                           <span className='flex items-center rounded-full bg-blue-600 px-3 pt-[3px] text-xs text-white lg:text-sm'>
-                            {calculateDiscountPercentageFromSpecialPrice(
-                              +totalPrice,
-                              +discountedPrice,
+                            {calculateDiscountPercentageFromSpecialPriceDif(
+                              price,
+                              showSpecialPrice,
                             )}
                           </span>
                         </div>
                       ) : null}
                     </div>
                   </div>
-                  {/* <div className='flex items-center gap-x-2'>
-                    <p className='text-lg font-bold'>
-                      {addCommaAndRetuenPersianStringNumber(`${finalPrice}`)}
-                    </p>
-                    <p className='mr-auto text-sm text-gray-500'>تومانء</p>
-                  </div> */}
-                  {/* {isValidDiscount ? (
-                    <div className='flex items-center justify-between gap-x-2'>
-                      <del className='text-xs text-gray-500 lg:text-sm'>
-                        {addCommaAndRetuenPersianStringNumber(`${totalPrice}`)}
-                      </del>
-                      <span className='flex items-center rounded-full bg-blue-600 px-3 pt-[2px] text-xs text-white lg:text-sm'>
-                        {calculateDiscountPercentageFromSpecialPrice(
-                          totalPrice as number,
-                          +finalPrice,
-                        )}
-                      </span>
-                    </div>
-                  ) : null} */}
                 </div>
               </div>
               <div className='mt-5'>

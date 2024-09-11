@@ -54,23 +54,37 @@ export const addCommaAndRetuenPersianStringNumberOnChange = (value: string) => {
   return toPersianNumberStr(addCommaToEnNumberValue);
 };
 
-export const calculateDiscountPercentageFromSpecialPrice = (
+export const calculateDiscountPercentageFromSpecialPriceDif = (
+  price: number,
+  specialPriceDif: number,
+) => {
+  const dis = Math.abs(Math.ceil((specialPriceDif / price) * 100));
+  return `٪ ${toPersianNumberStr(String(dis))}`;
+};
+
+export const calculateDiscountPercentageFromFullSpecialPrice = (
   price: number,
   specialPrice: number,
 ) => {
-  // Discount Percentage = (Original price - Discounted price) / Original price × 100
   const dis = Math.abs(Math.ceil(((price - specialPrice) / price) * 100));
 
   return `٪ ${toPersianNumberStr(String(dis))}`;
 };
 
-export const calculateDiscountSpecialPriceFromPercentage = (
+export const calculateFinalSpecialPriceFromPercentageDiscount = (
   price: number,
   percentage: number,
 ) => {
   const calculateRate = percentage / 100;
-
   return price - price * calculateRate;
+};
+
+export const calculateSpecialPriceDiscountFromPercentage = (
+  price: number,
+  percentage: number,
+) => {
+  const calculateRate = percentage / 100;
+  return price * calculateRate;
 };
 
 export const phoneNumberWithSpaces = (value: string): string => {

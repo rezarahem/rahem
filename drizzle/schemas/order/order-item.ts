@@ -6,8 +6,7 @@ import { Course, Order, User } from '../../drizzle';
 export const OrderItem = pgTable('order_item', {
   id: serial('id').primaryKey(),
   itemPrice: integer('item_price').notNull(),
-  discountedItemPrice: integer('discounted_item_price').notNull(),
-  finalItemPrice: integer('final_item_price').notNull(),
+  itemSpecialPrice: integer('item_special_price').notNull(),
   courseId: integer('course_id')
     .references(() => Course.id, {
       onDelete: 'cascade',

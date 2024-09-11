@@ -7,9 +7,8 @@ export const Order = pgTable(
   'order',
   {
     id: serial('id').primaryKey(),
-    totalPrice: integer('total_price').notNull(),
-    discountedPrice: integer('discounted_price').notNull(),
-    finalPrice: integer('final_price').notNull(),
+    price: integer('price').notNull(),
+    specialPrice: integer('special_price').notNull(),
     verified: boolean('verified').default(false),
     licenseId: integer('license_id')
       .references(() => License.id, {

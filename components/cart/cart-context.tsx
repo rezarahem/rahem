@@ -37,8 +37,8 @@ type ProviderProps = {
 type ContextType = {
   cartId: number | undefined;
   userId: number | undefined;
-  totalPrice: number;
-  discountedPrice: number;
+  price: number;
+  specialPrice: number;
   courses: CartCourseType[];
   cartPending: boolean;
   addCourse: (course: CartCourseType) => void;
@@ -62,7 +62,6 @@ export const CartProvider = ({ children }: ProviderProps) => {
   const [isMounted, setIsMounted] = useState(false);
   const [courseState, setCourseState] = useState<CartCourseType[]>([]);
   const [cartPending, setCartPending] = useState(false);
-  // const [totalPrice, setTotalPrice] = useState(0);
   // const [discountedPrice, setDiscountedPrice] = useState(0);
 
   useEffect(() => {
@@ -75,6 +74,7 @@ export const CartProvider = ({ children }: ProviderProps) => {
     const fetchinitialCart = async () => {
       try {
         const initialCart = await GetCartData();
+
         setCourseState(initialCart.courses ?? []);
         setCartId(initialCart.cartId);
         setUserId(initialCart.userId);
@@ -88,11 +88,7 @@ export const CartProvider = ({ children }: ProviderProps) => {
     }
   }, [isMounted]);
 
-  // const totalPrice = courseState?.reduce(
-  //   (total, course) =>
-  //     total + (course.sepcialPrice ? course.sepcialPrice : course.price),
-  //   0,
-  // );
+ 
 
   // useEffect(() => {
   //   if (courseState.length > 0) {
@@ -107,9 +103,9 @@ export const CartProvider = ({ children }: ProviderProps) => {
   //   }
   // }, [courseState]);
 
-  const totalPrice = courseState.reduce((t, c) => t + c.price, 0);
+  const price = courseState.reduce((t, c) => t + c.price, 0);
 
-  const discountedPrice = courseState.reduce((t, c) => t + c.sepcialPrice, 0);
+  const specialPrice = courseState.reduce((t, c) => t + c.sepcialPrice, 0);
 
   const addCourse = async (course: CartCourseType) => {
     try {
@@ -197,8 +193,8 @@ export const CartProvider = ({ children }: ProviderProps) => {
     () => ({
       cartId,
       userId,
-      totalPrice,
-      discountedPrice,
+      price,
+      specialPrice,
       cartPending,
       courses: courseState,
       addCourse,

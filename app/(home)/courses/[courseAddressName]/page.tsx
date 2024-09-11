@@ -13,7 +13,8 @@ import {
 import { GetCourseByAddressName } from '@/actions/course/get-course-by-address-name';
 import {
   addCommaAndRetuenPersianStringNumber,
-  calculateDiscountPercentageFromSpecialPrice,
+  calculateDiscountPercentageFromFullSpecialPrice,
+  calculateDiscountPercentageFromSpecialPriceDif,
 } from '@/lib/persian-string';
 import { CartCourseType, useCart } from '@/components/cart/cart-context';
 import AddToCart from '@/components/cart/add-to-cart';
@@ -58,7 +59,7 @@ const CoursePage = async ({
             <p className='text-xl font-bold'>
               {/* ۱٫۶۹۹٫۰۰۰ */}
               {addCommaAndRetuenPersianStringNumber(
-                `${course?.specialPrice ? course?.specialPrice : course?.price}`,
+                `${course?.specialPrice ? course?.price - course?.specialPrice : course?.price}`,
               )}
             </p>
             <p className='text-sm text-gray-500'>تومانء</p>
@@ -69,9 +70,9 @@ const CoursePage = async ({
                 {addCommaAndRetuenPersianStringNumber(`${course?.price}`)}
               </del>
               <span className='flex items-center rounded-full bg-blue-600 px-3 pt-[3px] text-sm text-white'>
-                {calculateDiscountPercentageFromSpecialPrice(
-                  +course.price,
-                  +course.specialPrice,
+                {calculateDiscountPercentageFromSpecialPriceDif(
+                  course.price,
+                  course.specialPrice,
                 )}
               </span>
             </div>
@@ -118,7 +119,7 @@ const CoursePage = async ({
           <div className='aspect-h-9 aspect-w-16 my-auto overflow-hidden rounded-md'>
             <Image
               src={course.thumbnailImage as string}
-              alt='nextjs'
+              alt={course.title}
               sizes='70vw'
               fill
             />

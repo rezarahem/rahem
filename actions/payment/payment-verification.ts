@@ -79,7 +79,9 @@ export const PaymentVerification = async (
       };
     }
 
-    if (code === 101) {
+    //
+
+    if (code === 100) {
       const spotPlayerIds = order.orderItem.map(
         (i) => i.spotPlayerId,
       ) satisfies string[];
@@ -100,53 +102,97 @@ export const PaymentVerification = async (
         },
       );
 
-      const [license] = await db
-        .insert(License)
-        .values({
-          key: courseLicense.data.key as string,
-        })
-        .returning();
+      const txRes = await db.transaction(async (tx) => {
+        const [license] = await tx
+          .insert(License)
+          .values({
+            key: courseLicense.data.key as string,
+          })
+          .returning();
 
-      const userCourse = await db
-        .insert(UserCourse)
-        .values(
-          order.orderItem.map((item) => ({
-            courseId: item.courseId,
-            userId: order.userId,
-          })),
-        )
-        .returning();
+        const userCourse = await tx
+          .insert(UserCourse)
+          .values(
+            order.orderItem.map((item) => ({
+              courseId: item.courseId,
+              userId: order.userId,
+            })),
+          )
+          .returning();
 
-      // if(!userCourse.length) {
+        const [updatedOrder] = await tx
+          .update(Order)
+          .set({
+            verified: true,
+            refNumber: ref_id.toString(),
+            licenseId: license.id,
+          })
+          .where(eq(Order.id, order.id))
+          .returning();
+
+        // if (!updatedOrder) {
+        //   return {
+        //     success: false,
+        //     errorMessage: 'خطایی رخ داد',
+        //   };
+        // }
+
+        return {
+          success: true,
+          ordreVerification: true,
+          orderNumber: updatedOrder.id,
+          orderFinalPrice: updatedOrder.finalPrice,
+          orderRefId: ref_id,
+        };
+      });
+
+      return txRes;
+
+      // if (!txRes || !txRes.success)
+      // const [license] = await db
+      //   .insert(License)
+      //   .values({
+      //     key: courseLicense.data.key as string,
+      //   })
+      //   .returning();
+
+      // const userCourse = await db
+      //   .insert(UserCourse)
+      //   .values(
+      //     order.orderItem.map((item) => ({
+      //       courseId: item.courseId,
+      //       userId: order.userId,
+      //     })),
+      //   )
+      //   .returning();
+
+      // const [updatedOrder] = await db
+      //   .update(Order)
+      //   .set({
+      //     verified: true,
+      //     refNumber: ref_id.toString(),
+      //     licenseId: license.id,
+      //   })
+      //   .where(eq(Order.id, order.id))
+      //   .returning();
+
+      // if (!updatedOrder) {
+      //   return {
+      //     success: false,
+      //     errorMessage: 'خطایی رخ داد',
+      //   };
       // }
 
-      const [updatedOrder] = await db
-        .update(Order)
-        .set({
-          verified: true,
-          refNumber: ref_id.toString(),
-          licenseId: license.id,
-        })
-        .where(eq(Order.id, order.id))
-        .returning();
-
-      if (!updatedOrder) {
-        return {
-          success: false,
-          errorMessage: 'خطایی رخ داد',
-        };
-      }
-
-      return {
-        success: true,
-        ordreVerification: true,
-        orderNumber: updatedOrder.id,
-        orderFinalPrice: updatedOrder.finalPrice,
-        orderRefId: ref_id,
-      };
+      // return {
+      //   success: true,
+      //   ordreVerification: true,
+      //   orderNumber: updatedOrder.id,
+      //   orderFinalPrice: updatedOrder.finalPrice,
+      //   orderRefId: ref_id,
+      // };
     }
 
-    if (code === 100) {
+    if (code === 101) {
       return {
         success: true,
         code101: true,
@@ -158,7 +204,7 @@ export const PaymentVerification = async (
       errorMessage: 'خطایی رخ داد',
     };
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     return {
       success: false,
@@ -166,3 +212,4 @@ export const PaymentVerification = async (
     };
   }
 };
+ 
