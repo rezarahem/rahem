@@ -6,7 +6,6 @@ import { OrderSchema, OrderItemSchema, OrderItemArrSchema } from '@/zod/zod';
 import * as z from 'zod';
 import axios from 'axios';
 import { eq } from 'drizzle-orm';
-import { redirect } from 'next/navigation';
 
 export type OrderType = z.infer<typeof OrderSchema>;
 export type OrderItemType = z.infer<typeof OrderItemSchema>;
@@ -70,7 +69,8 @@ export const CreateOrder = async ({
     const description = `سفارش شماره ${res.id}`;
     const finalPrice = res.price - res.specialPrice;
 
-    
+    console.log(finalPrice);
+
     const zRes = await axios.post(
       'https://api.zarinpal.com/pg/v4/payment/request.json',
       {

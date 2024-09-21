@@ -42,7 +42,7 @@ export const GetOrder = async (
     return {
       success: true,
       orderNumber: order.id,
-      orderFinalPrice: order.finalPrice,
+      orderFinalPrice: order.price - order.specialPrice,
     };
   } catch (error) {
     return {

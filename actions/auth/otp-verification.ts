@@ -2,7 +2,7 @@
 
 import { db } from '@/drizzle/db';
 import { eq } from 'drizzle-orm';
-import { hasTwoMinutesPassed, utcDate, utcUnix } from '@/lib/date';
+import { hasTwoMinutesPassed, utcUnix } from '@/lib/date';
 import { Login } from './login';
 import { User } from '@/drizzle/drizzle';
 // import { login } from './auth';

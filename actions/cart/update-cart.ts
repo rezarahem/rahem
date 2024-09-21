@@ -5,15 +5,15 @@ import { Cart, CourseToCart } from '@/drizzle/drizzle';
 import { and, eq } from 'drizzle-orm';
 
 export const AddToCartAction = async (
-  cartId: number | undefined,
   courseId: number,
-  userId: number,
+  cartId: number | undefined,
+  userId: number | undefined,
 ): Promise<{
   success: boolean;
   errorMessage?: string;
 }> => {
   try {
-    if (userId && cartId) {
+    if (cartId && userId) {
       await db.insert(CourseToCart).values({
         cartId,
         courseId,

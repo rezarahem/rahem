@@ -28,13 +28,13 @@ export const GetUserCourse = async (
     if (!userCourse) {
       return {
         success: true,
-        code: 100,
+        code: 100, // doesn't have course
       };
     }
 
     return {
       success: true,
-      code: 101,
+      code: 101, // have course
     };
   } catch (error) {
     return {

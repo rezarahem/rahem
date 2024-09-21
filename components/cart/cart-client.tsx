@@ -14,7 +14,7 @@ import {
 } from '@/lib/persian-string';
 import { useEffect, useState, useTransition } from 'react';
 import toast from 'react-hot-toast';
-import { CircleCheck } from 'lucide-react';
+import { CircleCheck, Loader2 } from 'lucide-react';
 import RemoveBtnCourseFromCartBtn from './remove-course-btn';
 import { Input } from '../ui/input';
 import { CheckDiscount } from '@/actions/cart/check-discount';
@@ -41,7 +41,7 @@ const calculateSpecialPrice = (
 };
 
 const CartClient = () => {
-  const { price, courses, userId, specialPrice } = useCart();
+  const { price, courses, userId, specialPrice, isMounted } = useCart();
 
   const [isValidDiscount, setIsValidDiscount] = useState(false);
   const [userDiscountCode, setUserDiscountCode] = useState('');
@@ -102,7 +102,7 @@ const CartClient = () => {
 
         const userOrder = {
           userId,
-          price: finalPrice,
+          price: price,
           specialPrice: showSpecialPrice,
         } satisfies OrderType;
 
@@ -133,6 +133,15 @@ const CartClient = () => {
       toast.error('خطایی رخ داد');
     }
   };
+
+  if (!isMounted)
+    return (
+      <Container className='my-4 flex h-full flex-col items-center justify-center space-y-3'>
+        <div>
+          <Loader2 className='size-10 animate-spin' />
+        </div>
+      </Container>
+    );
 
   if (price === 0)
     return (

@@ -1,10 +1,7 @@
-import CartClient from "@/components/cart/cart-client";
+import CartClient from '@/components/cart/cart-client';
 
 const Cart = () => {
+  return <CartClient />;
+};
 
-    const discountCodes = []
-
-    return <CartClient />
-}
- 
 export default Cart;

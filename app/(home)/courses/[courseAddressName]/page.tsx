@@ -20,8 +20,6 @@ import { CartCourseType, useCart } from '@/components/cart/cart-context';
 import AddToCart from '@/components/cart/add-to-cart';
 import { getSession } from '@/actions/auth/auth';
 import Link from 'next/link';
-import { db } from '@/drizzle/db';
-import { UserCourse } from '@/drizzle/drizzle';
 import { GetUserCourse } from '@/actions/course/get-user-course';
 
 const CoursePage = async ({

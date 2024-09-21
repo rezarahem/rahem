@@ -1,7 +1,7 @@
 'use server';
 
 import axios from 'axios';
-import { getSession } from '../auth/auth';
+import { encryptData, getSession } from '../auth/auth';
 import { AuthorizeUser } from '../auth/authorize-user';
 import { db } from '@/drizzle/db';
 import { and, eq } from 'drizzle-orm';
@@ -66,9 +66,11 @@ export const PaymentVerification = async (
       {
         merchant_id: process.env.ZARINPAL_MERCHANT_ID,
         authority,
-        amount: order.finalPrice,
+        amount: order.price - order.specialPrice,
       },
     );
+
+    console.log(res);
 
     const { code, ref_id } = res.data.data as zarinpalRes;
 
@@ -106,7 +108,7 @@ export const PaymentVerification = async (
         const [license] = await tx
           .insert(License)
           .values({
-            key: courseLicense.data.key as string,
+            key: await encryptData(courseLicense.data.key as string),
           })
           .returning();
 
@@ -141,55 +143,12 @@ export const PaymentVerification = async (
           success: true,
           ordreVerification: true,
           orderNumber: updatedOrder.id,
-          orderFinalPrice: updatedOrder.finalPrice,
+          orderFinalPrice: updatedOrder.price - updatedOrder.specialPrice,
           orderRefId: ref_id,
         };
       });
 
       return txRes;
-
-      // if (!txRes || !txRes.success)
-      // const [license] = await db
-      //   .insert(License)
-      //   .values({
-      //     key: courseLicense.data.key as string,
-      //   })
-      //   .returning();
-
-      // const userCourse = await db
-      //   .insert(UserCourse)
-      //   .values(
-      //     order.orderItem.map((item) => ({
-      //       courseId: item.courseId,
-      //       userId: order.userId,
-      //     })),
-      //   )
-      //   .returning();
-
-      // const [updatedOrder] = await db
-      //   .update(Order)
-      //   .set({
-      //     verified: true,
-      //     refNumber: ref_id.toString(),
-      //     licenseId: license.id,
-      //   })
-      //   .where(eq(Order.id, order.id))
-      //   .returning();
-
-      // if (!updatedOrder) {
-      //   return {
-      //     success: false,
-      //     errorMessage: 'خطایی رخ داد',
-      //   };
-      // }
-
-      // return {
-      //   success: true,
-      //   ordreVerification: true,
-      //   orderNumber: updatedOrder.id,
-      //   orderFinalPrice: updatedOrder.finalPrice,
-      //   orderRefId: ref_id,
-      // };
     }
 
     if (code === 101) {
@@ -212,4 +171,3 @@ export const PaymentVerification = async (
     };
   }
 };
- 

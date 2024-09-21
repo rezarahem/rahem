@@ -15,6 +15,7 @@ import {
 } from '@/actions/cart/update-cart';
 import { GetCartData } from '@/actions/cart/get-cart-data';
 import { ClearCart } from '@/actions/cart/clear-cart';
+import { FaLastfmSquare } from 'react-icons/fa';
 
 export type CartCourseType = {
   courseId: number;
@@ -41,6 +42,7 @@ type ContextType = {
   specialPrice: number;
   courses: CartCourseType[];
   cartPending: boolean;
+  isMounted: boolean;
   addCourse: (course: CartCourseType) => void;
   removeCourse: (course: CartCourseType) => void;
   clearCart: () => void;
@@ -59,10 +61,9 @@ export const useCart = () => {
 export const CartProvider = ({ children }: ProviderProps) => {
   const [cartId, setCartId] = useState<number | undefined>(undefined);
   const [userId, setUserId] = useState<number | undefined>(undefined);
-  const [isMounted, setIsMounted] = useState(false);
   const [courseState, setCourseState] = useState<CartCourseType[]>([]);
   const [cartPending, setCartPending] = useState(false);
-  // const [discountedPrice, setDiscountedPrice] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     if (!isMounted) {
@@ -78,8 +79,8 @@ export const CartProvider = ({ children }: ProviderProps) => {
         setCourseState(initialCart.courses ?? []);
         setCartId(initialCart.cartId);
         setUserId(initialCart.userId);
-      } catch (error) {} finally {
-         
+      } catch (error) {
+      } finally {
       }
     };
 
@@ -87,8 +88,6 @@ export const CartProvider = ({ children }: ProviderProps) => {
       fetchinitialCart();
     }
   }, [isMounted]);
-
- 
 
   // useEffect(() => {
   //   if (courseState.length > 0) {
@@ -110,27 +109,9 @@ export const CartProvider = ({ children }: ProviderProps) => {
   const addCourse = async (course: CartCourseType) => {
     try {
       setCartPending(true);
-      setCourseState((prev) => [
-        ...prev,
-        course,
-        // {
-        //   spotPlayerId: course.spotPlayerId,
-        //   courseAddressName: course.courseAddressName,
-        //   courseId: course.courseId,
-        //   courseTitle: course.courseTitle,
-        //   pending: course.pending,
-        //   price: course.price,
-        //   sepcialPrice: course.sepcialPrice,
-        //   thumbnailImage: course.thumbnailImage,
-        //   // ...course,
-        // },
-      ]);
+      setCourseState((prev) => [...prev, course]);
       const id = course.courseId;
-      const res = await AddToCartAction(
-        cartId,
-        course.courseId,
-        userId as number,
-      );
+      const res = await AddToCartAction(course.courseId, cartId, userId);
 
       if (res.success) {
         setCourseState((prev) =>
@@ -148,7 +129,6 @@ export const CartProvider = ({ children }: ProviderProps) => {
 
   const removeCourse = async (course: CartCourseType) => {
     try {
-      // setCartPending(true);
       setCourseState((prev) =>
         prev.filter((c) => c.courseId !== course.courseId),
       );
@@ -163,15 +143,12 @@ export const CartProvider = ({ children }: ProviderProps) => {
       }
     } catch (error) {
       toast.error('خطایی رخ داد');
-    } finally {
-      // setCartPending(false);
     }
   };
 
   const clearCart = async () => {
     try {
-      // setCartPending(true);
-      const prev = courseState
+      const prev = courseState;
       setCourseState([]);
 
       const res = await ClearCart(cartId as number);
@@ -184,10 +161,8 @@ export const CartProvider = ({ children }: ProviderProps) => {
       }
     } catch (error) {
       toast.error('خطایی رخ داد');
-    } finally {
-      // setCartPending(false);
     }
-  }
+  };
 
   const value = useMemo(
     () => ({
@@ -196,10 +171,11 @@ export const CartProvider = ({ children }: ProviderProps) => {
       price,
       specialPrice,
       cartPending,
+      isMounted,
       courses: courseState,
       addCourse,
       removeCourse,
-      clearCart
+      clearCart,
     }),
     [courseState],
   );

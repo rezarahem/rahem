@@ -48,6 +48,7 @@ export const encryptData = async (payload: string): Promise<string> => {
   const jwe = await new CompactEncrypt(new TextEncoder().encode(payload))
     .setProtectedHeader({ alg: 'dir', enc: 'A256GCM' })
     .encrypt(key);
+
   return jwe.split('..')[1];
 };
 
@@ -58,6 +59,16 @@ export const decryptData = async (encryptedData: string): Promise<any> => {
   const { plaintext } = await compactDecrypt(jwe, key);
   const sessionData = new TextDecoder().decode(plaintext);
   return JSON.parse(sessionData);
+};
+
+export const decryptLicense = async (
+  encryptedData: string,
+): Promise<string> => {
+  const key = await eKy();
+  const sult = process.env.ES;
+  const jwe = `${sult}..${encryptedData}`;
+  const { plaintext } = await compactDecrypt(jwe, key);
+  return new TextDecoder().decode(plaintext);
 };
 
 export const updateSession = async (request: NextRequest) => {

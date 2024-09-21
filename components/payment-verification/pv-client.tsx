@@ -1,7 +1,7 @@
 'use client';
 
 import { PaymentVerification } from '@/actions/payment/payment-verification';
-import SuccessfulOrder from '@/actions/payment/successful-order';
+import SuccessfulOrder from '@/components/payment-verification/successful-order';
 import { notFound, redirect } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
 

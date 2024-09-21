@@ -1,5 +1,6 @@
 'use client';
 
+import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Button } from '../ui/button';
 import { CartCourseType, useCart } from './cart-context';
 import Link from 'next/link';
@@ -10,8 +11,16 @@ type AddToCartProps = {
 };
 
 const AddToCart = ({ course, isStudet }: AddToCartProps) => {
-  const { addCourse, cartId, userId, courses, cartPending } = useCart();
+  const { addCourse, cartId, userId, courses, cartPending, isMounted } =
+    useCart();
   const isAdded = courses.some((c) => c.courseId === course.courseId);
+
+  if (!isMounted)
+    return (
+      <Button>
+        <DotsHorizontalIcon className='size-12 animate-pulse text-muted-foreground' />
+      </Button>
+    );
 
   const addToCartAction = () => {
     switch (isStudet) {
@@ -25,7 +34,7 @@ const AddToCart = ({ course, isStudet }: AddToCartProps) => {
       case 101:
         return (
           <Link href='/user'>
-            <Button>مشاهده لایسنس</Button>
+            <Button disabled={cartPending}>مشاهده لایسنس</Button>
           </Link>
         );
     }

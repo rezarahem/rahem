@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-export const PhoneNumberSchema = z.string().regex(/^09\d{9}$/, {
+export const PhoneNumberSchema = z.string().trim().regex(/^09\d{9}$/, {
   message: 'شماره همراه باید ۱۱ عدد باشد و با ۰۹ شروع شود',
 });
 

@@ -1,8 +1,9 @@
 import { notFound, redirect } from 'next/navigation';
 import { PaymentVerification } from '@/actions/payment/payment-verification';
-import NokError from '@/actions/payment/nok-error';
+import NokError from '@/components/payment-verification/nok-error';
+// import { GetOrder } from '@/actions/order/get-order';
+import SuccessfulOrder from '@/components/payment-verification/successful-order';
 import { GetOrder } from '@/actions/order/get-order';
-import SuccessfulOrder from '@/actions/payment/successful-order';
 
 const PaymentVerificationPage = async ({
   searchParams,
@@ -14,11 +15,11 @@ const PaymentVerificationPage = async ({
 }) => {
   const { Authority, Status } = searchParams;
 
-
   if (!Authority || !Status) notFound();
 
   if (Status === 'NOK') {
     const res = await GetOrder(Authority);
+
     if (!res || !res.success || !res.orderNumber || !res.orderFinalPrice)
       notFound();
     return (
@@ -31,6 +32,7 @@ const PaymentVerificationPage = async ({
 
   if (Status === 'OK') {
     const verify = await PaymentVerification(Authority);
+
     if (!verify || !verify.success) notFound();
     if (verify.code101) redirect('/');
     if (
@@ -49,7 +51,7 @@ const PaymentVerificationPage = async ({
           orderRefId={verify.orderRefId}
         />
       );
-    } 
+    }
   }
 };
 

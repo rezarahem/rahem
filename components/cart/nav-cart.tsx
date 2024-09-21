@@ -7,10 +7,15 @@ import { useCart } from './cart-context';
 import { cn } from '@/lib/utils';
 
 const NavCart = () => {
-  const { courses, cartPending } = useCart();
+  const { courses, cartPending, isMounted } = useCart();
 
   return (
-    <Button className='relative' variant='ghost' size='icon'>
+    <Button
+      disabled={!isMounted}
+      className='relative'
+      variant='ghost'
+      size='icon'
+    >
       <Link href='/cart'>
         <ShoppingCart className='max-sm:size-5' />
         {courses.length > 0 && (

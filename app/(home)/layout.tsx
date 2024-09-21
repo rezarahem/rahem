@@ -9,9 +9,9 @@ const HomeLayout = async ({
 }>) => {
   return (
     <CartProvider>
-      <div className='grid min-h-dvh grid-rows-[auto_1fr_auto]'>
+      <div className='grid grid-rows-[auto_1fr_auto]'>
         <Navbar />
-        <main>{children}</main>
+        <main className='min-h-dvh'>{children}</main>
         <Footer />
       </div>
     </CartProvider>
