@@ -23,6 +23,7 @@ type UserAvatarProps = {
 
 const UserAvatar = ({ session }: UserAvatarProps) => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+
   const buttonRef = useRef<HTMLButtonElement>(null);
   const modelRef = useRef<HTMLDivElement>(null);
   const { width } = useWindowSize();
@@ -130,14 +131,17 @@ const UserAvatar = ({ session }: UserAvatarProps) => {
             </div>
 
             <div className='flex h-full w-full flex-col p-4 max-sm:pb-28'>
-              <Link href='/user'>
                 <Button
                   className='flex w-full justify-start py-6'
                   variant='ghost'
+                  onClick={(e) => {
+                    setIsUserDropdownOpen(!isUserDropdownOpen)
+                  }}
                 >
+              <Link href='/user' >
                   دوره‌های من
-                </Button>
               </Link>
+                </Button>
 
               <Button
                 variant='ghost'

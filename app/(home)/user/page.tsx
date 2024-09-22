@@ -11,11 +11,10 @@ const UserPage = async () => {
   if (!authorize || !authorize.success) notFound();
 
   const orders = await GetUserOrders();
-  console.log(orders);
 
   return (
-    <Container className='grid grid-cols-[auto_1fr] gap-5 py-5'>
-      <div className='w-60 gap-2'>
+    <Container className='grid grid-cols-1 md:grid-cols-[auto_1fr] gap-5 py-5'>
+      <div className='md:w-60 w-max'>
         <p className='rounded-md bg-slate-100 p-2 dark:bg-slate-100/15'>
           دوره‌های من
         </p>

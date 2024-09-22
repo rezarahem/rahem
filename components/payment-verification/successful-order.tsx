@@ -60,7 +60,7 @@ const SuccessfulOrder = ({
         </div>
         <div className='flex items-center justify-center'>
           <Link
-            href='/user/my-licenses'
+            href='/user'
             className='flex items-center justify-center gap-x-2'
           >
             <Button>برو به لایسنس‌های من</Button>

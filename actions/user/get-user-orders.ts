@@ -68,7 +68,7 @@ export const GetUserOrders = async (): Promise<{
       userOrders: orders,
     };
   } catch (error) {
-    console.log(error);
+    // console.log(error);
 
     return {
       success: false,

@@ -33,7 +33,7 @@ const LicenseKeySnippetClient = ({
         >
           <Copy className='size-5' />
         </button>
-        <p className='text-sm'>{license.substring(0, 30)}...</p>
+        <p className='text-sm break-all text-muted-foreground'>{license.substring(0, 30)}...</p>
       </div>
     </div>
   );

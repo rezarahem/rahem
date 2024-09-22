@@ -69,7 +69,6 @@ export const CreateOrder = async ({
     const description = `سفارش شماره ${res.id}`;
     const finalPrice = res.price - res.specialPrice;
 
-    console.log(finalPrice);
 
     const zRes = await axios.post(
       'https://api.zarinpal.com/pg/v4/payment/request.json',

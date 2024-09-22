@@ -70,7 +70,6 @@ export const PaymentVerification = async (
       },
     );
 
-    console.log(res);
 
     const { code, ref_id } = res.data.data as zarinpalRes;
 
