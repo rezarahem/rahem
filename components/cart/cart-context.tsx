@@ -16,7 +16,6 @@ import {
 } from '@/actions/cart/update-cart';
 import { GetCartData } from '@/actions/cart/get-cart-data';
 import { ClearCart } from '@/actions/cart/clear-cart';
-import { FaLastfmSquare } from 'react-icons/fa';
 
 export type CartCourseType = {
   courseId: number;

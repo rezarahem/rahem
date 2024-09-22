@@ -38,7 +38,6 @@ export const generateMetadata = async ({
   };
 };
 
-
 const CoursePage = async ({
   params,
 }: {
@@ -95,14 +94,25 @@ const CoursePage = async ({
         </div>
       ) : (
         <div className='space-y-1'>
-          <div className='flex items-center text-gray-500'>
-            <span className='ml-1 italic'>NaN</span>
-            :price
-          </div>
+          <div className='flex items-center text-gray-500'>###,###,###</div>
         </div>
       )}
     </>
   );
+
+  const addToCartBtn = () => {
+    if (course.onSale) {
+      return session?.user.id ? (
+        <AddToCart course={courseForCart} isStudent={isStudent.code} />
+      ) : (
+        <Link href='/login'>
+          <Button>ورود</Button>
+        </Link>
+      );
+    } else {
+      return <Button disabled>به زودی</Button>;
+    }
+  };
 
   return (
     <Container className='space-y-5 py-5'>
@@ -118,13 +128,7 @@ const CoursePage = async ({
           </div>
           <div className='fixed bottom-0 left-0 z-10 w-full border-t bg-white p-3 dark:bg-slate-950 md:static md:mt-auto md:border-none md:p-0'>
             <div className='flex items-center justify-between'>
-              {session?.user.id ? (
-                <AddToCart course={courseForCart} isStudet={isStudent.code} />
-              ) : (
-                <Link href='/login'>
-                  <Button>ورود</Button>
-                </Link>
-              )}
+              {addToCartBtn()}
               <div className='md:hidden lg:block'>{price}</div>
             </div>
           </div>
@@ -148,7 +152,6 @@ const CoursePage = async ({
             <source src={course?.introVideo} type='video/mp4' />
             مرورگر شما ویدیو را پشتیبانی نمی کند.
           </video> */}
-
           <div className='hidden md:mr-auto md:mt-auto md:flex md:flex-col lg:hidden'>
             {price}
           </div>
@@ -169,8 +172,6 @@ const CoursePage = async ({
 
         <div className='space-y-3'>
           <div className='space-y-3 p-3 md:rounded-md md:border'>
-            {/* loop */}
-
             {course.coursePoints.map((p, i) => (
               <div key={p.id}>
                 <h2 className='mb-4 text-2xl font-black'>{p.point}</h2>

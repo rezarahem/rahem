@@ -7,12 +7,13 @@ import Link from 'next/link';
 
 type AddToCartProps = {
   course: CartCourseType;
-  isStudet: 100 | 101;
+  isStudent: 100 | 101;
 };
 
-const AddToCart = ({ course, isStudet }: AddToCartProps) => {
+const AddToCart = ({ course, isStudent }: AddToCartProps) => {
   const { addCourse, cartId, userId, courses, cartPending, isMounted } =
     useCart();
+
   const isAdded = courses.some((c) => c.courseId === course.courseId);
 
   if (!isMounted)
@@ -23,7 +24,8 @@ const AddToCart = ({ course, isStudet }: AddToCartProps) => {
     );
 
   const addToCartAction = () => {
-    switch (isStudet) {
+    console.log(course);
+    switch (isStudent) {
       case 100:
         return (
           <Button disabled={cartPending} onClick={() => addCourse(course)}>
