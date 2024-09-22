@@ -1,0 +1,7 @@
+{
+  "app": "rahem",
+  "platform": "next",
+  "next": {
+    "mirror": false
+  }
+}
