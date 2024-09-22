@@ -1,9 +1,13 @@
 import { notFound, redirect } from 'next/navigation';
 import { PaymentVerification } from '@/actions/payment/payment-verification';
 import NokError from '@/components/payment-verification/nok-error';
-// import { GetOrder } from '@/actions/order/get-order';
 import SuccessfulOrder from '@/components/payment-verification/successful-order';
 import { GetOrder } from '@/actions/order/get-order';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'تکمیل سفارش',
+};
 
 const PaymentVerificationPage = async ({
   searchParams,

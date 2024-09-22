@@ -6,6 +6,17 @@ import { ThemeProvider } from '@/providers/theme-provider';
 import { ToastProvider } from '@/providers/toast-provider';
 import NextTopLoader from 'nextjs-toploader';
 
+export const metadata: Metadata = {
+  title: {
+    default: 'راحم مرجع آموزش ریکت و نکست',
+    template: '%s | راحم مرجع آموزش ریکت و نکست',
+  },
+  description: 'آموزش پروژه محور ریکت و نکست',
+  // other: {
+  //   enamad: '419877',
+  // },
+};
+
 const mainFont = localFont({
   src: [
     {
@@ -19,11 +30,6 @@ const mainFont = localFont({
   weight: '100 1100',
   display: 'block',
 });
-
-export const metadata: Metadata = {
-  title: 'راحم',
-  description: 'rahem.dev',
-};
 
 const RootLayout = async ({
   children,

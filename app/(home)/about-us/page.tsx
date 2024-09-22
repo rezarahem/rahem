@@ -1,5 +1,10 @@
 import Container from '@/components/ui/container';
+import { Metadata } from 'next';
 import Image from 'next/image';
+
+export const metadata: Metadata = {
+  title: 'درباره ما',
+};
 
 const AboutUs = () => {
   const aboutUsTopics: { label: string; content: string }[] = [

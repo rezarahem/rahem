@@ -1,5 +1,10 @@
 import { notFound, redirect } from 'next/navigation';
 import PvClient from './pv-client';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'تکمیل سفارش',
+};
 
 const Pv = ({
   searchParams,
