@@ -21,6 +21,23 @@ import AddToCart from '@/components/cart/add-to-cart';
 import { getSession } from '@/actions/auth/auth';
 import Link from 'next/link';
 import { GetUserCourse } from '@/actions/course/get-user-course';
+import { Metadata } from 'next';
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: {
+    courseAddressName: string;
+  };
+}): Promise<Metadata> => {
+  const courseAddressName = params.courseAddressName;
+
+  const course = await GetCourseByAddressName(courseAddressName);
+  return {
+    title: course?.title,
+  };
+};
+
 
 const CoursePage = async ({
   params,
