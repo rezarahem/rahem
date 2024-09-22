@@ -59,7 +59,7 @@ const UserAvatar = ({ session }: UserAvatarProps) => {
     document.addEventListener('mousedown', checkClickedOutside);
 
     return () => document.removeEventListener('mousedown', checkClickedOutside);
-  }, [isUserDropdownOpen]);
+  }, [isUserDropdownOpen, checkClickedOutside]);
 
   return (
     <div className='relative max-w-7xl'>
@@ -124,17 +124,15 @@ const UserAvatar = ({ session }: UserAvatarProps) => {
             </div>
 
             <div className='flex h-full w-full flex-col p-4 max-sm:pb-28'>
-                <Button
-                  className='flex w-full justify-start py-6'
-                  variant='ghost'
-                  onClick={(e) => {
-                    setIsUserDropdownOpen(!isUserDropdownOpen)
-                  }}
-                >
-              <Link href='/user' >
-                  دوره‌های من
-              </Link>
-                </Button>
+              <Button
+                className='flex w-full justify-start py-6'
+                variant='ghost'
+                onClick={(e) => {
+                  setIsUserDropdownOpen(!isUserDropdownOpen);
+                }}
+              >
+                <Link href='/user'>دوره‌های من</Link>
+              </Button>
 
               <Button
                 variant='ghost'

@@ -26,7 +26,7 @@ const SuccessfulOrder = ({
 
   useEffect(() => {
     clearCart();
-  }, []);
+  });
 
   return (
     <Container className='py-5'>

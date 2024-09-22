@@ -14,7 +14,7 @@ import {
 import { ArrowLeft, LoaderCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useCallback, useEffect, useState, useTransition } from 'react';
 import toast from 'react-hot-toast';
 import { OtpSchema, PhoneNumberSchema, UserNameSchema } from '@/zod/zod';
 
@@ -31,12 +31,6 @@ const LoginForm = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [userName, setUserName] = useState('');
   const [userOtpNumber, setUserOtpNumber] = useState('');
-
-  useEffect(() => {
-    if (userOtpNumber.length === 5) {
-      onVerification();
-    }
-  }, [userOtpNumber]);
 
   const onSubmitPhoneNumber = () => {
     try {
@@ -110,7 +104,46 @@ const LoginForm = () => {
     }
   };
 
-  const onVerification = () => {
+  // const onVerification = () => {
+  //   try {
+  //     startTransition(async () => {
+  //       const validatedPhoneNumber = PhoneNumberSchema.safeParse(
+  //         toEnglishNumberStr(phoneNumber),
+  //       );
+
+  //       if (!validatedPhoneNumber.success) {
+  //         toast.error('خطایی رخ داد، مجددا تلاش کنید');
+  //         setActiveTemp('phoneNumber');
+  //         return;
+  //       }
+
+  //       const validatedOtp = OtpSchema.safeParse(
+  //         toEnglishNumberStr(userOtpNumber),
+  //       );
+
+  //       if (!validatedOtp.success) {
+  //         setInputError(validatedOtp.error.errors[0].message);
+  //         return;
+  //       }
+
+  //       const res = await OtpVerification(
+  //         validatedPhoneNumber.data,
+  //         validatedOtp.data,
+  //       );
+
+  //       if (res.success) {
+  //         toast.success('ورود موفق');
+  //         router.push('/');
+  //       } else {
+  //         toast.error(res?.errorMessage || 'اختلال در شبکه، مجددا تلاش کنید');
+  //       }
+  //     });
+  //   } catch (error) {
+  //     toast.error('خطایی رخ داد، مجددا تلاش کنید');
+  //   }
+  // };
+
+  const onVerification = useCallback(() => {
     try {
       startTransition(async () => {
         const validatedPhoneNumber = PhoneNumberSchema.safeParse(
@@ -147,7 +180,13 @@ const LoginForm = () => {
     } catch (error) {
       toast.error('خطایی رخ داد، مجددا تلاش کنید');
     }
-  };
+  }, [userOtpNumber, phoneNumber, router]);
+
+  useEffect(() => {
+    if (userOtpNumber.length === 5) {
+      onVerification();
+    }
+  }, [userOtpNumber, onVerification]);
 
   const handleSubmit = () => {
     switch (activeTemp) {

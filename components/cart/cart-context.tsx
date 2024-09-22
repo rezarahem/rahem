@@ -7,6 +7,7 @@ import React, {
   useState,
   use,
   useEffect,
+  useCallback,
 } from 'react';
 import toast from 'react-hot-toast';
 import {
@@ -69,7 +70,7 @@ export const CartProvider = ({ children }: ProviderProps) => {
     if (!isMounted) {
       setIsMounted(true);
     }
-  }, []);
+  }, [isMounted]);
 
   useEffect(() => {
     const fetchinitialCart = async () => {
@@ -89,64 +90,100 @@ export const CartProvider = ({ children }: ProviderProps) => {
     }
   }, [isMounted]);
 
-  // useEffect(() => {
-  //   if (courseState.length > 0) {
-  //     const total = courseState.reduce((t, c) => t + c.price, 0);
-  //     const discount = courseState.reduce((t, c) => t + c.sepcialPrice, 0);
-
-  //     setTotalPrice(total);
-  //     setDiscountedPrice(discount);
-  //   } else {
-  //     setTotalPrice(0);
-  //     setDiscountedPrice(0);
-  //   }
-  // }, [courseState]);
-
   const price = courseState.reduce((t, c) => t + c.price, 0);
 
   const specialPrice = courseState.reduce((t, c) => t + c.sepcialPrice, 0);
 
-  const addCourse = async (course: CartCourseType) => {
-    try {
-      setCartPending(true);
-      setCourseState((prev) => [...prev, course]);
-      const id = course.courseId;
-      const res = await AddToCartAction(course.courseId, cartId, userId);
+  // const addCourse = async (course: CartCourseType) => {
+  //   try {
+  //     setCartPending(true);
+  //     setCourseState((prev) => [...prev, course]);
+  //     const id = course.courseId;
+  //     const res = await AddToCartAction(course.courseId, cartId, userId);
 
-      if (res.success) {
-        setCourseState((prev) =>
-          prev.map((c) => (c.courseId === id ? { ...c, pending: false } : c)),
-        );
-      } else {
-        setCourseState((prev) => prev.filter((c) => c.courseId !== id));
-      }
-    } catch (error) {
-      toast.error('خطایی رخ داد');
-    } finally {
-      setCartPending(false);
-    }
-  };
+  //     if (res.success) {
+  //       setCourseState((prev) =>
+  //         prev.map((c) => (c.courseId === id ? { ...c, pending: false } : c)),
+  //       );
+  //     } else {
+  //       setCourseState((prev) => prev.filter((c) => c.courseId !== id));
+  //     }
+  //   } catch (error) {
+  //     toast.error('خطایی رخ داد');
+  //   } finally {
+  //     setCartPending(false);
+  //   }
+  // };
 
-  const removeCourse = async (course: CartCourseType) => {
-    try {
-      setCourseState((prev) =>
-        prev.filter((c) => c.courseId !== course.courseId),
-      );
-
-      const res = await RemoveFromCartAction(cartId as number, course.courseId);
-
-      if (res.success) {
-        // done
-      } else {
+  const addCourse = useCallback(
+    async (course: CartCourseType) => {
+      try {
+        setCartPending(true);
         setCourseState((prev) => [...prev, course]);
+        const id = course.courseId;
+        const res = await AddToCartAction(course.courseId, cartId, userId);
+
+        if (res.success) {
+          setCourseState((prev) =>
+            prev.map((c) => (c.courseId === id ? { ...c, pending: false } : c)),
+          );
+        } else {
+          setCourseState((prev) => prev.filter((c) => c.courseId !== id));
+        }
+      } catch (error) {
+        toast.error('خطایی رخ داد');
+      } finally {
+        setCartPending(false);
+      }
+    },
+    [cartId, userId],
+  );
+
+  const removeCourse = useCallback(
+    async (course: CartCourseType) => {
+      try {
+        setCourseState((prev) =>
+          prev.filter((c) => c.courseId !== course.courseId),
+        );
+
+        const res = await RemoveFromCartAction(
+          cartId as number,
+          course.courseId,
+        );
+
+        if (res.success) {
+          // done
+        } else {
+          setCourseState((prev) => [...prev, course]);
+          toast.error('خطایی رخ داد');
+        }
+      } catch (error) {
         toast.error('خطایی رخ داد');
       }
-    } catch (error) {
-      toast.error('خطایی رخ داد');
-    }
-  };
+    },
+    [cartId, setCourseState],
+  );
 
-  const clearCart = async () => {
+  // const removeCourse = async (course: CartCourseType) => {
+  //   try {
+  //     setCourseState((prev) =>
+  //       prev.filter((c) => c.courseId !== course.courseId),
+  //     );
+
+  //     const res = await RemoveFromCartAction(cartId as number, course.courseId);
+
+  //     if (res.success) {
+  //       // done
+  //     } else {
+  //       setCourseState((prev) => [...prev, course]);
+  //       toast.error('خطایی رخ داد');
+  //     }
+  //   } catch (error) {
+  //     toast.error('خطایی رخ داد');
+  //   }
+  // };
+
+  const clearCart = useCallback(async () => {
     try {
       const prev = courseState;
       setCourseState([]);
@@ -162,7 +199,7 @@ export const CartProvider = ({ children }: ProviderProps) => {
     } catch (error) {
       toast.error('خطایی رخ داد');
     }
-  };
+  }, [setCourseState, cartId, courseState]);
 
   const value = useMemo(
     () => ({
@@ -177,7 +214,18 @@ export const CartProvider = ({ children }: ProviderProps) => {
       removeCourse,
       clearCart,
     }),
-    [courseState],
+    [
+      courseState,
+      cartId,
+      cartPending,
+      isMounted,
+      price,
+      specialPrice,
+      userId,
+      addCourse,
+      clearCart,
+      removeCourse,
+    ],
   );
 
   return <CartCtx.Provider value={value}>{children}</CartCtx.Provider>;
