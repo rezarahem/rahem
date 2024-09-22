@@ -13,9 +13,9 @@ const NavLinks = ({ onToggle }: NavLinksProps) => {
             onToggle();
           }
         }}
-        href='/courses'
+        href='/courses/nextjs'
       >
-        دوره‌ها
+        دوره Nextjs
       </Link>
       <Link
         onClick={(e) => {
