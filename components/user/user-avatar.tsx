@@ -110,13 +110,6 @@ const UserAvatar = ({ session }: UserAvatarProps) => {
                 <p className='mb-1 text-3xl font-black'>
                   {String(session?.user.userName)[0]}
                 </p>
-                {/* <Image
-                  src={session?.user.image as string}
-                  alt='user-image'
-                  fill
-                  sizes='100vw'
-                  className='object-cover object-center'
-                /> */}
               </div>
               <div className='space-y-1'>
                 <p className='text-2xl font-bold'>{session?.user.userName}</p>

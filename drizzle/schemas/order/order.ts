@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { boolean, index, integer, serial, text } from 'drizzle-orm/pg-core';
+import { boolean, index, integer, serial, text, varchar } from 'drizzle-orm/pg-core';
 import { pgTable } from 'drizzle-orm/pg-core';
 import { License, OrderItem, User } from '../../drizzle';
 
@@ -20,9 +20,9 @@ export const Order = pgTable(
         onDelete: 'cascade',
       })
       .notNull(),
-    authority: text('authority').unique(),
-    refNumber: text('ref_number'),
-    description: text('description'),
+    authority: varchar('authority', {length: 1024}).unique(),
+    refNumber: varchar('ref_number', {length: 50}),
+    description: varchar('description', {length: 50}),
   },
   (t) => ({
     authorityUserIndex: index('authority_user_idx').on(t.authority, t.userId),

@@ -8,7 +8,7 @@ import {
 
 export const DiscountCode = pgTable('discount_code', {
   id: serial('id').primaryKey(),
-  key: varchar('key', { length: 50 }).notNull().unique(),
+  key: varchar('key', { length: 20 }).notNull().unique(),
   isPercentage: boolean('in_percentage').notNull(),
   discount: integer('discount').notNull(),
 });
