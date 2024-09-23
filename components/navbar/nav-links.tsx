@@ -8,6 +8,7 @@ const NavLinks = ({ onToggle }: NavLinksProps) => {
   return (
     <div className='flex flex-col gap-4 sm:flex-row'>
       <Link
+        className='flex gap-1'
         onClick={(e) => {
           if (onToggle) {
             onToggle();
@@ -15,7 +16,7 @@ const NavLinks = ({ onToggle }: NavLinksProps) => {
         }}
         href='/courses/nextjs'
       >
-        دوره Nextjs
+        دوره <span className='translate-y-px'>Nextjs</span>
       </Link>
       <Link
         onClick={(e) => {
