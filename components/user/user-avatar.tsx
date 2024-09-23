@@ -2,7 +2,6 @@
 
 import { LogOut, User } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useWindowSize } from 'usehooks-ts';

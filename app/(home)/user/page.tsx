@@ -1,10 +1,9 @@
-import { decryptData } from '@/actions/auth/auth';
 import { AuthorizeUser } from '@/actions/auth/authorize-user';
 import { GetUserOrders } from '@/actions/user/get-user-orders';
 import Container from '@/components/ui/container';
 import LicenseKeySnippet from '@/components/user/license-key-snippet';
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'حساب کاربری',
@@ -13,7 +12,7 @@ export const metadata: Metadata = {
 const UserPage = async () => {
   const authorize = await AuthorizeUser();
 
-  if (!authorize || !authorize.success) notFound();
+  if (!authorize || !authorize.success) redirect('/');
 
   const orders = await GetUserOrders();
 
