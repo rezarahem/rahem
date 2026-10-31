@@ -1,9 +1,0 @@
-// don't skip the the / bitch
-export const publicRoutes = ['/', '/about-us', '/courses', '/pv'];
-export const coursesRoutes = '/courses';
-
-export const authRoutes = ['/login'];
-
-// export const adminRoot = '/control';
-
-export const DEAFAULT_LOGIN_REDIRECT = '/';
