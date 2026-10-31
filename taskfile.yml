@@ -1,0 +1,58 @@
+version: '3'
+
+vars:
+ PACKAGE_MANAGER: bun
+
+output: prefixed
+
+tasks:
+ default:
+  desc: Choose an action with gum
+  silent: true
+  interactive: true
+  cmds:
+   - |
+    if [ ! -t 0 ] || ! command -v gum >/dev/null 2>&1; then
+      {{.TASK_EXE}} --list
+      exit 0
+    fi
+
+    choice=$(gum choose \
+      "build" \
+      "deploy" \
+      "build-and-deploy"
+    )
+
+    if [ -z "$choice" ]; then
+      exit 0
+    fi
+
+    echo "Selected: [$choice]"
+    {{.TASK_EXE}} "$choice"
+
+ build:
+  desc: Build Next.js static site
+  cmds:
+   - '{{.PACKAGE_MANAGER}} run build'
+
+ deploy:
+  desc: Deploy out directory to GitHub Pages
+  interactive: true
+  cmds:
+   - |
+    if [ ! -d out ]; then
+      echo "Error: out directory does not exist. Run 'task build' first."
+      exit 1
+    fi
+
+    if command -v gum >/dev/null 2>&1 && [ -t 0 ]; then
+      gum confirm "Deploy website to GitHub Pages?" || exit 0
+    fi
+
+    git subtree push --prefix out origin gh-pages
+
+ build-and-deploy:
+  desc: Build and deploy website
+  cmds:
+   - task: build
+   - task: deploy
